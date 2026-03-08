@@ -105,4 +105,18 @@ int kuchukbaeva::execLogic(const OutList& seque, std::ostream& out, std::ostream
       out << "\n";
     }
   }
+
+  isFirst = true;
+  for (LCIter< int > it = sums.cbegin(); it != sums.cend(); ++it) {
+    if (!isFirst) {
+      out << " ";
+    }
+    out << *it;
+    isFirst = false;
+  }
+  if (!sums.isEmpty()) {
+    out << "\n";
+  }
+
+  return 0;
 }
