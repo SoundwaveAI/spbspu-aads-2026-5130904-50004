@@ -35,3 +35,27 @@ void kuchukbaeva::prInput(std::istream& in, OutList& seque)
     }
   }
 }
+
+int kuchukbaeva::execLogic(const OutList& seque, std::ostream& out, std::ostream& err)
+{
+  if (seque.isEmpty()) {
+    out << "0\n";
+    return 0;
+  }
+
+  bool isFirst = true;
+  for (LCIter< std::pair< std::string, InList > > it = seque.cbegin(); it != seque.cend(); ++it) {
+    if (!isFirst) {
+      out << " ";
+    }
+    out << (*it).first;
+    isFirst = false;
+  }
+  out << "\n";
+
+  List< LCIter< int > > iters;
+  LIter< LCIter< int > > itersTail = iters.beforeBegin();
+  for (LCIter< std::pair< std::string, InList > > it = seque.cbegin(); it != seque.cend(); ++it) {
+    itersTail = iters.insertAfter(itersTail, (*it).second.cbegin());
+  }
+}
