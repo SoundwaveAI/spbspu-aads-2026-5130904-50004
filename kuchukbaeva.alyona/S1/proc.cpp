@@ -58,4 +58,51 @@ int kuchukbaeva::execLogic(const OutList& seque, std::ostream& out, std::ostream
   for (LCIter< std::pair< std::string, InList > > it = seque.cbegin(); it != seque.cend(); ++it) {
     itersTail = iters.insertAfter(itersTail, (*it).second.cbegin());
   }
+  while (hasMore) {
+    hasMore = false;
+    List< int > row;
+    LIter< int > rowTail = row.beforeBegin();
+
+    LIter< LCIter< int > > iterNode = iters.begin();
+    LCIter< std::pair< std::string, InList > > seqIt = seque.cbegin();
+
+    int currentSum = 0;
+    bool isSum = true;
+
+    while (iterNode != iters.end()) {
+      if (*iterNode != (*seqIt).second.cend()) {
+        const int val = **iterNode;
+        rowTail = row.insertAfter(rowTail, val);
+
+        if (val > 0 && std::numeric_limits< int >::max() - currentSum < val) {
+          isSum = false;
+        } else {
+          currentSum += val;
+        }
+
+        ++(*iterNode);
+        hasMore = true;
+      }
+      ++iterNode;
+      ++seqIt;
+    }
+
+    if (hasMore) {
+      if (!isSum) {
+        err << "Error: Sum overflow\n";
+        return 1;
+      }
+      sumsTail = sums.insertAfter(sumsTail, currentSum);
+
+      isFirst = true;
+      for (LCIter< int > it = row.cbegin(); it != row.cend(); ++it) {
+        if (!isFirst) {
+          out << " ";
+        }
+        out << *it;
+        isFirst = false;
+      }
+      out << "\n";
+    }
+  }
 }
