@@ -48,6 +48,10 @@ namespace kuchukbaeva {
       return node_->data_;
     }
 
+    T* operator->() {
+      return &node_->data_;
+    }
+
     LIter& operator++()
     {
       node_ = node_->next_;
@@ -93,6 +97,9 @@ namespace kuchukbaeva {
     {
       return node_->data_;
     }
+    T* operator->() {
+      return &node_->data_;
+    }
 
     LCIter& operator++()
     {
@@ -132,24 +139,16 @@ namespace kuchukbaeva {
     List(const List& other):
       List()
     {
-      try {
-        detail::Node< T >* current = other.fake_->next_;
-        detail::Node< T >* tail = fake_;
-        while (current != other.fake_) {
-          tail->next_ = new detail::Node< T >(current->data_, fake_);
-          tail = tail->next_;
-          current = current->next_;
-        }
-      } catch (...) {
-        clear();
-        throw;
+      LIter< T > it = beforeBegin();
+      for (LCIter< T > otherIt = other.cbegin(); otherIt != other.cend(); ++otherIt) {
+        it = insertAfter(it, *otherIt);
       }
     }
 
     List(List&& other) noexcept:
-      List()
+      fake_(other.fake_)
     {
-      std::swap(fake_, other.fake_);
+      other.fake_ = new detail::Node< T >();
     }
 
     ~List()
@@ -169,7 +168,12 @@ namespace kuchukbaeva {
 
     List& operator=(List&& other) noexcept
     {
-      std::swap(fake_, other.fake_);
+      if (this != &other) {
+        clear();
+        delete fake_;
+        fake_ = other.fake_;
+        other.fake_ = new detail::Node< T >();
+      }
       return *this;
     }
 
@@ -198,9 +202,56 @@ namespace kuchukbaeva {
       return LIter< T >(fake_);
     }
 
-    LCIter< T > cbeforeBegin() const
+    T& front() {
+      return fake_->next_->data_;
+    }
+
+    const T& front() const {
+      return fake_->next_->data_;
+    }
+
+    T& back()
     {
-      return LCIter< T >(fake_);
+      detail::Node< T >* curr = fake_;
+      while (curr->next_ != fake_) {
+        curr = curr->next_;
+      }
+      return curr->data_;
+    }
+    void push_front(const T& value)
+    {
+      insertAfter(beforeBegin(), value);
+    }
+
+    void push_back(const T& value)
+    {
+      detail::Node< T >* curr = fake_;
+      while (curr->next_ != fake_) {
+        curr = curr->next_;
+      }
+      insertAfter(LIter< T >(curr), value);
+    }
+
+    void pop_front()
+    {
+      eraseAfter(beforeBegin());
+    }
+
+    void pop_back()
+    {
+      detail::Node< T >* curr = fake_;
+      if (isEmpty()) return;
+      while (curr->next_->next_ != fake_) {
+        curr = curr->next_;
+      }
+      eraseAfter(LIter< T >(curr));
+    }
+
+    void clear()
+    {
+      while (!isEmpty()) {
+        pop_front();
+      }
     }
 
     bool isEmpty() const
@@ -217,27 +268,16 @@ namespace kuchukbaeva {
 
     LIter< T > eraseAfter(LIter< T > pos)
     {
-      if (pos.node_->next_ == fake_) {
-        return end();
-      }
       detail::Node< T >* toDelete = pos.node_->next_;
       pos.node_->next_ = toDelete->next_;
       delete toDelete;
       return LIter< T >(pos.node_->next_);
     }
 
-    void clear()
-    {
-      while (!isEmpty()) {
-        eraseAfter(beforeBegin());
-      }
-    }
-
   private:
     detail::Node< T >* fake_;
 
   };
-
 }
 
 #endif

@@ -43,15 +43,51 @@ BOOST_AUTO_TEST_CASE(testEraseAfter)
   BOOST_CHECK(iter == list.end());
 }
 
-BOOST_AUTO_TEST_CASE(testClearAndCopy)
+BOOST_AUTO_TEST_CASE(testFrontBack)
 {
-  kuchukbaeva::List< int > listOne;
-  listOne.insertAfter(listOne.beforeBegin(), 42);
+  kuchukbaeva::List< int > list;
+  list.push_front(10);
+  list.push_back(20);
+  BOOST_CHECK_EQUAL(list.front(), 10);
+  BOOST_CHECK_EQUAL(list.back(), 20);
+}
 
-  kuchukbaeva::List< int > listTwo = listOne;
-  BOOST_CHECK_EQUAL(*(listTwo.begin()), 42);
+BOOST_AUTO_TEST_CASE(testPushPop)
+{
+  kuchukbaeva::List< int > list;
+  list.push_front(1);
+  list.push_back(2);
+  list.push_front(0);
+  BOOST_CHECK_EQUAL(list.front(), 0);
+  BOOST_CHECK_EQUAL(list.back(), 2);
+  list.pop_front();
+  BOOST_CHECK_EQUAL(list.front(), 1);
+  list.pop_back();
+  BOOST_CHECK_EQUAL(list.back(), 1);
+  BOOST_CHECK_EQUAL(list.front(), 1);
+}
 
-  listOne.clear();
-  BOOST_CHECK(listOne.isEmpty());
-  BOOST_CHECK(!listTwo.isEmpty());
+BOOST_AUTO_TEST_CASE(testClear)
+{
+  kuchukbaeva::List< int > list;
+  list.push_back(1);
+  list.push_back(2);
+  list.push_back(3);
+  BOOST_CHECK(!list.isEmpty());
+  list.clear();
+  BOOST_CHECK(list.isEmpty());
+  BOOST_CHECK(list.begin() == list.end());
+}
+
+BOOST_AUTO_TEST_CASE(testCopyMove)
+{
+  kuchukbaeva::List< int > list1;
+  list1.push_back(1);
+  list1.push_back(2);
+  kuchukbaeva::List< int > list2(list1);
+  BOOST_CHECK_EQUAL(list2.front(), 1);
+  BOOST_CHECK_EQUAL(list2.back(), 2);
+  kuchukbaeva::List< int > list3(std::move(list1));
+  BOOST_CHECK_EQUAL(list3.front(), 1);
+  BOOST_CHECK(list1.isEmpty());
 }
