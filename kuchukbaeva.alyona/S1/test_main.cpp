@@ -24,3 +24,33 @@ BOOST_AUTO_TEST_CASE(testInsertAndIterate)
   ++iter;
   BOOST_CHECK(iter == list.end());
 }
+
+BOOST_AUTO_TEST_CASE(testEraseAfter)
+{
+  kuchukbaeva::List< int > list;
+  kuchukbaeva::LIter< int > it = list.beforeBegin();
+  it = list.insertAfter(it, 1);
+  list.insertAfter(it, 2);
+
+  list.eraseAfter(list.beforeBegin());
+
+  kuchukbaeva::LIter< int > iter = list.begin();
+  BOOST_CHECK_EQUAL(*iter, 2);
+  ++iter;
+  BOOST_CHECK(iter == list.end());
+}
+
+BOOST_AUTO_TEST_CASE(testClearAndCopy)
+{
+  kuchukbaeva::List< int > listOne;
+  listOne.insertAfter(listOne.beforeBegin(), 42);
+
+  kuchukbaeva::List< int > listTwo = listOne;
+  BOOST_CHECK_EQUAL(*(listTwo.begin()), 42);
+
+  listOne.clear();
+  BOOST_CHECK(listOne.isEmpty());
+  BOOST_CHECK(!listTwo.isEmpty());
+}
+
+BOOST_AUTO_TEST_SUITE_END()
