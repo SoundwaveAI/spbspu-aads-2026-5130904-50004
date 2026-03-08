@@ -76,4 +76,49 @@ namespace kuchukbaeva {
     friend class LCIter< T >;
     detail::Node< T >* node_;
   };
+  template < class T >
+  class LCIter {
+  public:
+    LCIter(const detail::Node< T >* node = nullptr):
+      node_(node)
+    {
+    }
+
+    LCIter(const LIter< T >& other):
+      node_(other.node_)
+    {
+    }
+
+    const T& operator*() const
+    {
+      return node_->data_;
+    }
+
+    LCIter& operator++()
+    {
+      node_ = node_->next_;
+      return *this;
+    }
+
+    LCIter operator++(int)
+    {
+      LCIter tmp = *this;
+      node_ = node_->next_;
+      return tmp;
+    }
+
+    bool operator==(const LCIter& other) const
+    {
+      return node_ == other.node_;
+    }
+
+    bool operator!=(const LCIter& other) const
+    {
+      return node_ != other.node_;
+    }
+
+  private:
+    friend class List< T >;
+    const detail::Node< T >* node_;
+  };
 }
