@@ -121,4 +121,123 @@ namespace kuchukbaeva {
     friend class List< T >;
     const detail::Node< T >* node_;
   };
+  template < class T >
+  class List {
+  public:
+    List():
+      fake_(new detail::Node< T >())
+    {
+    }
+
+    List(const List& other):
+      List()
+    {
+      try {
+        detail::Node< T >* current = other.fake_->next_;
+        detail::Node< T >* tail = fake_;
+        while (current != other.fake_) {
+          tail->next_ = new detail::Node< T >(current->data_, fake_);
+          tail = tail->next_;
+          current = current->next_;
+        }
+      } catch (...) {
+        clear();
+        throw;
+      }
+    }
+
+    List(List&& other) noexcept:
+      List()
+    {
+      std::swap(fake_, other.fake_);
+    }
+
+    ~List()
+    {
+      clear();
+      delete fake_;
+    }
+
+    List& operator=(const List& other)
+    {
+      if (this != &other) {
+        List tmp(other);
+        std::swap(fake_, tmp.fake_);
+      }
+      return *this;
+    }
+
+    List& operator=(List&& other) noexcept
+    {
+      std::swap(fake_, other.fake_);
+      return *this;
+    }
+
+    LIter< T > begin()
+    {
+      return LIter< T >(fake_->next_);
+    }
+
+    LIter< T > end()
+    {
+      return LIter< T >(fake_);
+    }
+
+    LCIter< T > cbegin() const
+    {
+      return LCIter< T >(fake_->next_);
+    }
+
+    LCIter< T > cend() const
+    {
+      return LCIter< T >(fake_);
+    }
+
+    LIter< T > beforeBegin()
+    {
+      return LIter< T >(fake_);
+    }
+
+    LCIter< T > cbeforeBegin() const
+    {
+      return LCIter< T >(fake_);
+    }
+
+    bool isEmpty() const
+    {
+      return fake_->next_ == fake_;
+    }
+
+    LIter< T > insertAfter(LIter< T > pos, const T& value)
+    {
+      detail::Node< T >* newNode = new detail::Node< T >(value, pos.node_->next_);
+      pos.node_->next_ = newNode;
+      return LIter< T >(newNode);
+    }
+
+    LIter< T > eraseAfter(LIter< T > pos)
+    {
+      if (pos.node_->next_ == fake_) {
+        return end();
+      }
+      detail::Node< T >* toDelete = pos.node_->next_;
+      pos.node_->next_ = toDelete->next_;
+      delete toDelete;
+      return LIter< T >(pos.node_->next_);
+    }
+
+    void clear()
+    {
+      while (!isEmpty()) {
+        eraseAfter(beforeBegin());
+      }
+    }
+
+  private:
+    detail::Node< T >* fake_;
+
+  };
+
 }
+
+#endif
