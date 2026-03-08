@@ -1,5 +1,5 @@
 #if defined(__GNUC__) || defined(__clang__)
-__attribute__((weak)) int main(int argc, char* argv[])
+__attribute__((weak)) int main(int argc, char* argv[]);
 #endif
 
 #define BOOST_TEST_MODULE S1
