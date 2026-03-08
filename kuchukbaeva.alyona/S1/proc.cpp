@@ -25,7 +25,7 @@ void kuchukbaeva::prInput(std::istream& in, OutList& seque)
       unsigned long long val = 0;
       in >> val;
       if (in.fail() || val > static_cast< unsigned long long >(std::numeric_limits< int >::max())) {
-          throw std::out_of_range("Overflow");
+          throw std::overflow_error("Overflow");
       }
       tail = seq.insertAfter(tail, static_cast< int >(val));
     }

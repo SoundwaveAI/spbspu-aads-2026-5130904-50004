@@ -9,7 +9,7 @@ int main()
   try {
     kuchukbaeva::prInput(std::cin, seque);
     return kuchukbaeva::execLogic(seque, std::cout, std::cerr);
-  } catch (const std::out_of_range& e) {
+  } catch (const std::overflow_error& e) {
     std::cerr << "Error: " << e.what() << "\n";
     return 1;
   } catch (const std::exception& e) {
