@@ -58,6 +58,10 @@ int kuchukbaeva::execLogic(const OutList& seque, std::ostream& out, std::ostream
   for (LCIter< std::pair< std::string, InList > > it = seque.cbegin(); it != seque.cend(); ++it) {
     itersTail = iters.insertAfter(itersTail, (*it).second.cbegin());
   }
+  bool hasMore = true;
+  List< int > sums;
+  LIter< int > sumsTail = sums.beforeBegin();
+
   while (hasMore) {
     hasMore = false;
     List< int > row;
