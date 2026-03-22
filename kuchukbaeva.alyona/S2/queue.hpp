@@ -8,8 +8,7 @@ namespace kuchukbaeva {
   template < class T >
   class Queue {
   public:
-    void push(const T& rhs)
-    {
+    void push(const T& rhs) {
       LIter< T > it = list_.beforeBegin();
       LIter< T > next = list_.begin();
       while (next != list_.end()) {
@@ -19,8 +18,7 @@ namespace kuchukbaeva {
       list_.insertAfter(it, rhs);
     }
 
-    T drop()
-    {
+    T drop() {
       if (list_.isEmpty()) {
         throw std::out_of_range("Queue is empty");
       }
@@ -29,8 +27,7 @@ namespace kuchukbaeva {
       return val;
     }
 
-    bool isEmpty() const
-    {
+    bool isEmpty() const {
       return list_.isEmpty();
     }
 

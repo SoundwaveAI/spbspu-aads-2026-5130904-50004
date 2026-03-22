@@ -8,13 +8,11 @@ namespace kuchukbaeva {
   template < class T >
   class Stack {
   public:
-    void push(const T& rhs)
-    {
+    void push(const T& rhs) {
       list_.push_front(rhs);
     }
 
-    T drop()
-    {
+    T drop() {
       if (list_.isEmpty()) {
         throw std::out_of_range("Stack is empty");
       }
@@ -23,8 +21,7 @@ namespace kuchukbaeva {
       return val;
     }
 
-    bool isEmpty() const
-    {
+    bool isEmpty() const {
       return list_.isEmpty();
     }
 

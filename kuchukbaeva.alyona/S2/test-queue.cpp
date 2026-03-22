@@ -1,8 +1,7 @@
 #include <boost/test/unit_test.hpp>
 #include "queue.hpp"
 
-BOOST_AUTO_TEST_CASE(testQueuePushAndDrop)
-{
+BOOST_AUTO_TEST_CASE(testQueuePushAndDrop) {
   kuchukbaeva::Queue< int > queue;
   BOOST_CHECK(queue.isEmpty());
   queue.push(10);
@@ -13,8 +12,7 @@ BOOST_AUTO_TEST_CASE(testQueuePushAndDrop)
   BOOST_CHECK(queue.isEmpty());
 }
 
-BOOST_AUTO_TEST_CASE(testQueueException)
-{
+BOOST_AUTO_TEST_CASE(testQueueException) {
   kuchukbaeva::Queue< int > queue;
   BOOST_CHECK_THROW(queue.drop(), std::out_of_range);
 }
