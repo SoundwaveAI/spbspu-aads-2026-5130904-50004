@@ -4,6 +4,58 @@
 #include <cctype>
 #include "stack.hpp"
 
+namespace {
+  int getPrecedence(const std::string& op)
+  {
+    if (op == "*" || op == "/" || op == "%") {
+      return 3;
+    }
+    if (op == "+" || op == "-") {
+      return 2;
+    }
+    if (op == "<<") {
+      return 1;
+    }
+    return 0;
+  }
+
+  long long safeAdd(long long a, long long b)
+  {
+    if ((b > 0 && a > std::numeric_limits< long long >::max() - b) ||
+        (b < 0 && a < std::numeric_limits< long long >::min() - b)) {
+      throw std::overflow_error("Addition overflow");
+    }
+    return a + b;
+  }
+
+  long long safeSub(long long a, long long b)
+  {
+    if ((b < 0 && a > std::numeric_limits< long long >::max() + b) ||
+        (b > 0 && a < std::numeric_limits< long long >::min() + b)) {
+      throw std::overflow_error("Subtraction overflow");
+    }
+    return a - b;
+  }
+
+  long long safeMul(long long a, long long b)
+  {
+    if (a > 0) {
+      if (b > 0) {
+        if (a > std::numeric_limits< long long >::max() / b) throw std::overflow_error("Multiplication overflow");
+      } else {
+        if (b < std::numeric_limits< long long >::min() / a) throw std::overflow_error("Multiplication overflow");
+      }
+    } else {
+      if (b > 0) {
+        if (a < std::numeric_limits< long long >::min() / b) throw std::overflow_error("Multiplication overflow");
+      } else {
+        if (a != 0 && b < std::numeric_limits< long long >::max() / a) throw std::overflow_error("Multiplication overflow");
+      }
+    }
+    return a * b;
+  }
+}
+
 long long kuchukbaeva::concatenateNumbers(long long a, long long b)
 {
   if (b < 0) {
