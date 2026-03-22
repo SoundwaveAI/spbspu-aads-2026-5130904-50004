@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
     }
     input = &file;
   } else if (argc > 2) {
-    std::cerr << "it must be ./lab {filename}" << \n";
+    std::cerr << "it must be ./lab {filename}" << "\n";
     return 1;
   }
 
