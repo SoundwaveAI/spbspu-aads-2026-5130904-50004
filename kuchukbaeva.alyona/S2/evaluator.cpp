@@ -56,7 +56,7 @@ long long kuchukbaeva::evaluateExpression(const std::string& expression)
           values.push(safeSub(v1, v2));
         } else if (top == "*") {
           values.push(safeMul(v1, v2));
-        } else if (top == "«") {
+        } else if (top == "<<") {
           values.push(kuchukbaeva::concatenateNumbers(v1, v2));
         } else if (top == "/") {
           if (v2 == 0) {
@@ -73,7 +73,7 @@ long long kuchukbaeva::evaluateExpression(const std::string& expression)
     } else {
       std::string op = "";
       if (expression[i] == '<' && i + 1 < expression.length() && expression[i + 1] == '<') {
-        op = "«";
+        op = "<<";
         ++i;
       } else {
         op = std::string(1, expression[i]);
@@ -93,7 +93,7 @@ long long kuchukbaeva::evaluateExpression(const std::string& expression)
           values.push(safeSub(v1, v2));
         } else if (top == "*") {
           values.push(safeMul(v1, v2));
-        } else if (top == "«") {
+        } else if (top == "<<") {
           values.push(kuchukbaeva::concatenateNumbers(v1, v2));
         } else if (top == "/") {
           if (v2 == 0) {
@@ -121,7 +121,7 @@ long long kuchukbaeva::evaluateExpression(const std::string& expression)
       values.push(safeSub(v1, v2));
     } else if (top == "*") {
       values.push(safeMul(v1, v2));
-    } else if (top == "«") {
+    } else if (top == "<<") {
       values.push(kuchukbaeva::concatenateNumbers(v1, v2));
     } else if (top == "/") {
       if (v2 == 0) {
