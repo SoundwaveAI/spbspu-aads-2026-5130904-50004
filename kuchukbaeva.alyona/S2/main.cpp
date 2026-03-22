@@ -24,7 +24,9 @@ int main(int argc, char* argv[]) {
   std::string line = "";
   try {
     while (std::getline(*input, line)) {
-      if (line.empty()) continue;
+      if (line.empty()) {
+        continue;
+      }
       results.push(kuchukbaeva::evaluateExpression(line));
     }
   } catch (const std::exception& e) {
@@ -34,7 +36,9 @@ int main(int argc, char* argv[]) {
 
   bool first = true;
   while (!results.isEmpty()) {
-    if (!first) std::cout << " ";
+    if (!first) {
+      std::cout << " ";
+    }
     std::cout << results.drop();
     first = false;
   }
