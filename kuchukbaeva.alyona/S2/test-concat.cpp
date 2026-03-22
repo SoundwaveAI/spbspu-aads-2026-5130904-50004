@@ -9,7 +9,7 @@ BOOST_AUTO_TEST_CASE(testConcatenationValue) {
 }
 
 BOOST_AUTO_TEST_CASE(testConcatInExpression) {
-  std::string expr = "10 << 20 + 5";
+  std::string expr = "10 ## 20 + 5";
   BOOST_CHECK_EQUAL(kuchukbaeva::evaluateExpression(expr), 1025);
 }
 
