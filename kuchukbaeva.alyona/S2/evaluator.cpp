@@ -5,8 +5,18 @@
 #include "stack.hpp"
 
 namespace {
-  int getPrecedence(const std::string& op)
-  {
+  long long safeMod(long long a, long long b) {
+    if (b == 0) {
+      throw std::logic_error("Division by zero");
+    }
+    long long res = a % b;
+    if (res < 0) {
+      res += (b < 0) ? -b : b;
+    }
+    return res;
+  }
+
+  int getPrecedence(const std::string& op) {
     if (op == "*" || op == "/" || op == "%") {
       return 3;
     }
@@ -19,8 +29,7 @@ namespace {
     return 0;
   }
 
-  long long safeAdd(long long a, long long b)
-  {
+  long long safeAdd(long long a, long long b) {
     if ((b > 0 && a > std::numeric_limits< long long >::max() - b) ||
         (b < 0 && a < std::numeric_limits< long long >::min() - b)) {
       throw std::overflow_error("Addition overflow");
@@ -28,8 +37,7 @@ namespace {
     return a + b;
   }
 
-  long long safeSub(long long a, long long b)
-  {
+  long long safeSub(long long a, long long b) {
     if ((b < 0 && a > std::numeric_limits< long long >::max() + b) ||
         (b > 0 && a < std::numeric_limits< long long >::min() + b)) {
       throw std::overflow_error("Subtraction overflow");
@@ -37,8 +45,7 @@ namespace {
     return a - b;
   }
 
-  long long safeMul(long long a, long long b)
-  {
+  long long safeMul(long long a, long long b) {
     if (a > 0) {
       if (b > 0) {
         if (a > std::numeric_limits< long long >::max() / b) throw std::overflow_error("Multiplication overflow");
@@ -56,8 +63,7 @@ namespace {
   }
 }
 
-long long kuchukbaeva::concatenateNumbers(long long a, long long b)
-{
+long long kuchukbaeva::concatenateNumbers(long long a, long long b) {
   if (b < 0) {
     throw std::invalid_argument("Cannot concatenate negative number");
   }
@@ -74,8 +80,7 @@ long long kuchukbaeva::concatenateNumbers(long long a, long long b)
   return safeAdd(safeMul(a, multiplier), b);
 }
 
-long long kuchukbaeva::evaluateExpression(const std::string& expression)
-{
+long long kuchukbaeva::evaluateExpression(const std::string& expression) {
   kuchukbaeva::Stack< long long > values;
   kuchukbaeva::Stack< std::string > ops;
 
@@ -116,10 +121,7 @@ long long kuchukbaeva::evaluateExpression(const std::string& expression)
           }
           values.push(v1 / v2);
         } else if (top == "%") {
-          if (v2 == 0) {
-            throw std::logic_error("Division by zero");
-          }
-          values.push(v1 % v2);
+          values.push(safeMod(v1, v2));
         }
       }
     } else {
@@ -153,10 +155,7 @@ long long kuchukbaeva::evaluateExpression(const std::string& expression)
           }
           values.push(v1 / v2);
         } else if (top == "%") {
-          if (v2 == 0) {
-            throw std::logic_error("Division by zero");
-          }
-          values.push(v1 % v2);
+          values.push(safeMod(v1, v2));
         }
       }
       ops.push(op);
@@ -181,10 +180,7 @@ long long kuchukbaeva::evaluateExpression(const std::string& expression)
       }
       values.push(v1 / v2);
     } else if (top == "%") {
-      if (v2 == 0) {
-        throw std::logic_error("Division by zero");
-      }
-      values.push(v1 % v2);
+      values.push(safeMod(v1, v2));
     }
   }
   return values.drop();
