@@ -39,7 +39,8 @@ int main(int argc, char* argv[]) {
     if (!first) {
       std::cout << " ";
     }
-    std::cout << results.drop();
+    std::cout << results.top();
+    results.drop();
     first = false;
   }
   std::cout << "\n";
