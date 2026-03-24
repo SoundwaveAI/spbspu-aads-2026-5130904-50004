@@ -11,14 +11,18 @@ namespace kuchukbaeva {
     void push(const T& rhs) {
       list_.push_front(rhs);
     }
-
-    T drop() {
+    const T& top() const {
       if (list_.isEmpty()) {
         throw std::out_of_range("Stack is empty");
       }
-      T val = list_.front();
+      return list_.front();
+    }
+
+    void drop() {
+      if (list_.isEmpty()) {
+        throw std::out_of_range("Stack is empty");
+      }
       list_.pop_front();
-      return val;
     }
 
     bool isEmpty() const {

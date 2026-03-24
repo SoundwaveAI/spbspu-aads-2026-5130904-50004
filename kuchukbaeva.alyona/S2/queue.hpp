@@ -18,13 +18,18 @@ namespace kuchukbaeva {
       list_.insertAfter(it, rhs);
     }
 
-    T drop() {
+    const T& drop() const {
       if (list_.isEmpty()) {
         throw std::out_of_range("Queue is empty");
       }
-      T val = list_.front();
+      return list_.front();
+    }
+
+    void drop() {
+      if (list_.isEmpty()) {
+        throw std::out_of_range("Queue is empty");
+      }
       list_.pop_front();
-      return val;
     }
 
     bool isEmpty() const {
