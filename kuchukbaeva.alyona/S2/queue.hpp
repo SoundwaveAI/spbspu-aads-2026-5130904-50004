@@ -18,7 +18,7 @@ namespace kuchukbaeva {
       list_.insertAfter(it, rhs);
     }
 
-    const T& drop() const {
+    const T& top() const {
       if (list_.isEmpty()) {
         throw std::out_of_range("Queue is empty");
       }
