@@ -131,8 +131,9 @@ BOOST_AUTO_TEST_CASE(IteratorTraversal)
   ++it;
   BOOST_CHECK(it == t.end());
 
-  --it;
-  BOOST_CHECK_EQUAL(it->first, 15);
+  auto last_it = t.find(15);
+  --last_it;
+  BOOST_CHECK_EQUAL(last_it->first, 10);
 }
 
 BOOST_AUTO_TEST_CASE(RotateLeftTest)
