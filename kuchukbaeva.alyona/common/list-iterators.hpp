@@ -54,7 +54,7 @@ namespace  kuchukbaeva {
   };
 
   template< class T >
-  class LCIter: public std::iterator< std::forward_iteratot_tag, T >
+  class LCIter: public std::iterator< std::forward_iterator_tag, T >
   {
   public:
     LCIter(const detail::Node< T >* node = nullptr):
