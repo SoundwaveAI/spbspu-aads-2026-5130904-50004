@@ -2,16 +2,17 @@
 #define LIST_HPP
 #include "list-iterators.hpp"
 #include <stdexcept>
+#include <utility"
 
 namespace kuchukbaeva {
 
-  template < class T >
-  class List {
+  template< class T >
+  class List
+  {
   public:
     List():
       fake_(new detail::Node< T >())
-    {
-    }
+    {}
 
     List(const List& other):
       List()
@@ -25,32 +26,21 @@ namespace kuchukbaeva {
     List(List&& other) noexcept:
       fake_(other.fake_)
     {
-      other.fake_ = new detail::Node< T >();
+      other.fake_ = nullptr;
     }
 
     ~List()
     {
-      clear();
-      delete fake_;
-    }
-
-    List& operator=(const List& other)
-    {
-      if (this != &other) {
-        List tmp(other);
-        std::swap(fake_, tmp.fake_);
-      }
-      return *this;
-    }
-
-    List& operator=(List&& other) noexcept
-    {
-      if (this != &other) {
+      if (fake_)
+      {
         clear();
         delete fake_;
-        fake_ = other.fake_;
-        other.fake_ = new detail::Node< T >();
       }
+    }
+
+    List& operator=(List other) noexcept
+    {
+      swap(other);
       return *this;
     }
 
@@ -100,8 +90,17 @@ namespace kuchukbaeva {
       eraseAfter(beforeBegin());
     }
 
+    void swap(List& other) noexcept
+    {
+      std::swap(fake_, other.fake_);
+    }
+
     void clear()
     {
+      if (!fake_)
+      {
+        return;
+      }
       while (!isEmpty()) {
         pop_front();
       }
@@ -109,7 +108,7 @@ namespace kuchukbaeva {
 
     bool isEmpty() const
     {
-      return fake_->next_ == fake_;
+      return fake_ ? fake_->next_ == fake_ : true;
     }
 
     LIter< T > insertAfter(LIter< T > pos, const T& value)

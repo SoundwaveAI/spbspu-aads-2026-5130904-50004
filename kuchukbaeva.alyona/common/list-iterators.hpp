@@ -1,24 +1,26 @@
 #ifndef LIST_ITERATORS_HPP
 #define LIST_ITERATORS_HPP
 #include "node.hpp"
+#include <iterator>
 
 namespace  kuchukbaeva {
-  template < class T > class List;
-  template < class T > class LCIter;
-  template < class T >
-  class LIter {
+  template< class T > class List;
+  template< class T > class LCIter;
+  template< class T >
+  class LIter: public std::iterator< std::forward_iterator_tag, T >
+  {
   public:
     LIter(detail::Node< T >* node = nullptr):
       node_(node)
-    {
-    }
+    {}
 
     T& operator*()
     {
       return node_->data_;
     }
 
-    T* operator->() {
+    T* operator->()
+    {
       return &node_->data_;
     }
 
@@ -51,24 +53,24 @@ namespace  kuchukbaeva {
     detail::Node< T >* node_;
   };
 
-  template < class T >
-  class LCIter {
+  template< class T >
+  class LCIter: public: std::iterator< std::forward_iteratot_tag, T >
+  {
   public:
     LCIter(const detail::Node< T >* node = nullptr):
       node_(node)
-    {
-    }
+    {}
 
     LCIter(const LIter< T >& other):
       node_(other.node_)
-    {
-    }
+    {}
 
     const T& operator*() const
     {
       return node_->data_;
     }
-    const T* operator->() const {
+    const T* operator->() const
+    {
       return &node_->data_;
     }
 
