@@ -9,7 +9,7 @@ int main()
 {
   try
   {
-    kuchukbaeva::List< std::pair< std::string, kuchukbaeva::List< unsigned long long > seque;
+    kuchukbaeva::List< std::pair< std::string, kuchukbaeva::List< unsigned long long > > > seque;
     kuchukbaeva::LIter< std::pair< std::string, kuchukbaeva::List< unsigned long long > > > seqTail = seque.beforeBegin();
     std::string name;
 

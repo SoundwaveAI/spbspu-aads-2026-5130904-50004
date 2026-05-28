@@ -12,7 +12,7 @@ namespace kuchukbaeva {
       Node(T&& d, Node* n);
 
       T data_;
-      Node* nest_;
+      Node* next_;
     };
   }
 }
