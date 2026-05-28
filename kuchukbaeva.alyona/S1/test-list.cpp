@@ -1,17 +1,30 @@
 #include <boost/test/unit_test.hpp>
-#include "../common/list.hpp"
+#include <list.hpp>
 
-BOOST_AUTO_TEST_CASE(testInsertAndIterate)
+BOOST_AUTO_TEST_CASE(testInsertAfter)
 {
   kuchukbaeva::List< int > list;
   BOOST_CHECK(list.isEmpty());
 
   kuchukbaeva::LIter< int > it = list.beforeBegin();
   it = list.insertAfter(it, 10);
+  BOOST_CHECK(!list.isEmpty());
+  BOOST_CHECK_EQUAL(list.front(), 10);
+
   it = list.insertAfter(it, 20);
   list.insertAfter(it, 30);
 
   BOOST_CHECK(!list.isEmpty());
+}
+
+
+BOOST_AUTO_TEST_CASE(testIteratorTraversal)
+{
+  kuchukbaeva::List< int > list;
+  kuchukbaeva::LIter< int > it = list.beforeBegin();
+  it = list.insertAfter(it, 10);
+  it = list.insertAfter(it, 20);
+  list.insertAfter(it, 30);
 
   kuchukbaeva::LIter< int > iter = list.begin();
   BOOST_CHECK_EQUAL(*iter, 10);
