@@ -4,32 +4,35 @@
 
 namespace kuchukbaeva {
   namespace detail {
-    template < class T >
-    class Node {
-    public:
-      Node():
-        data_(),
-        next_(this)
-      {
-      }
-
-      Node(const T& d, Node* n):
-        data_(d),
-        next_(n)
-      {
-      }
-
-      Node(T&& d, Node* n):
-        data_(std::move(d)),
-        next_(n)
-      {
-      }
+    template< class T >
+    struct Node
+    {
+      Node();
+      Node(const T& d, Node* n);
+      Node(T&& d, Node* n);
 
       T data_;
-      Node* next_;
+      Node* nest_;
     };
   }
 }
 
+template< class T >
+kuchukbaeva::detail::Node< T >::Node():
+  data_(),
+  next_(this)
+{}
+
+template< class T >
+kuchukbaeva::detail::Node< T >::Node(const T& d, Node* n):
+  data_(d),
+  next_(n)
+{}
+
+template< class T >
+kuchukbaeva::detail::Node< T >::Node(T&& d, Node* n):
+  data_(std::move(d)),
+  next_(n)
+{}
 
 #endif
