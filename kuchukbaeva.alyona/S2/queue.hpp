@@ -59,7 +59,7 @@ T& kuchukbaeva::Queue< T >::top()
 }
 
 template< class T >
-const T& kuchukbaeva::Queue< class T >::top() const
+const T& kuchukbaeva::Queue< T >::top() const
 {
   if (empty())
   {
@@ -69,7 +69,7 @@ const T& kuchukbaeva::Queue< class T >::top() const
 }
 
 template< class T >
-bool kuchukbaeva::Queue< class T >::empty() const
+bool kuchukbaeva::Queue< T >::empty() const
 {
   return list_.isEmpty();
 }
@@ -80,7 +80,7 @@ size_t kuchukbaeva::Queue< T >::getSize() const
   return size_;
 }
 
-template < class T >
+template< class T >
 void kuchukbaeva::Queue< T >::clear()
 {
   list_.clear();
