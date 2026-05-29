@@ -1,18 +1,20 @@
 #ifndef HASHTABLE_HPP
 #define HASHTABLE_HPP
-#include "vector.hpp"
-#include "../common/list.hpp"
-#include "hashTableIter.hpp"
+
 #include <utility>
 #include <stdexcept>
 #include <string>
 #include <boost/hash2/siphash.hpp>
 #include <boost/hash2/hash_append.hpp>
+#include <list.hpp>
+#include "vector.hpp"
+#include "hashTableIter.hpp"
 
-namespace kuchukbaeva {
-
+namespace kuchukbaeva
+{
   template< class T >
-  struct SipHashFunctor {
+  struct SipHashFunctor
+  {
     std::size_t operator()(const T& val) const
     {
       boost::hash2::siphash_64 hasher;
@@ -22,7 +24,8 @@ namespace kuchukbaeva {
   };
 
   template< class T >
-  struct EqualFunctor {
+  struct EqualFunctor
+  {
     bool operator()(const T& lhs, const T& rhs) const
     {
       return lhs == rhs;
@@ -30,7 +33,8 @@ namespace kuchukbaeva {
   };
 
   template< class Key, class Value, class Hash = SipHashFunctor< Key >, class Equal = EqualFunctor< Key > >
-  class HashTable {
+  class HashTable
+  {
   public:
     explicit HashTable(size_t slots = 16);
     HashTable(const HashTable& other);
@@ -43,9 +47,10 @@ namespace kuchukbaeva {
     void swap(HashTable& other) noexcept;
 
     void add(const Key& k, const Value& v);
-    Value drop(const Key& k);
+    void drop(const Key& k);
     bool has(const Key& k) const;
-    Value* find(const Key& k);
+    HTIter< Key, Value, Hash, Equal > find(const Key& k);
+    HTCiter< Key, Value, Hash, Equal > find(const Key& k) const;
     void rehash(size_t slots);
 
     size_t getSize() const;
@@ -67,39 +72,43 @@ namespace kuchukbaeva {
     Equal equalFn_;
   };
 }
+
 template< class Key, class Value, class Hash, class Equal >
-kuchukbaeva::HashTable< Key, Value, Hash, Equal >::HashTable(size_t slots) :
-  mass_(slots, List< std::pair< Key, Value > >()),
+kuchukbaeva::HashTable< Key, Value, Hash, Equal >::HashTable(size_t slots):
+  mass_(slots),
   size_(0),
   hashFn_(),
   equalFn_()
-{}
-
-template< class Key, class Value, class Hash, class Equal >
-kuchukbaeva::HashTable< Key, Value, Hash, Equal >::HashTable(const HashTable& other) :
-  mass_(other.mass_.getSize(), List< std::pair< Key, Value > >()),
-  size_(0),
-  hashFn_(other.hashFn_),
-  equalFn_(other.equalFn_)
 {
-  for (size_t i = 0; i < other.mass_.getSize(); ++i) {
-    for (LCIter< std::pair< Key, Value > > it = other.mass_[i].cbegin(); it != other.mass_[i].cend(); ++it) {
-      this->add(it->first, it->second);
-    }
+  for (size_t i = 0; i < slots; ++i)
+  {
+    mass_.pushBack(List< std::pair< Key, Value > >());
   }
 }
 
 template< class Key, class Value, class Hash, class Equal >
-kuchukbaeva::HashTable< Key, Value, Hash, Equal >::HashTable(HashTable&& other) noexcept :
-  HashTable(1)
+kuchukbaeva::HashTable< Key, Value, Hash, Equal >::HashTable(const HashTable& other):
+{
+  mass_.swap(other.mass_);
+  swap(size_, other.size_);
+}
+
+template< class Key, class Value, class Hash, class Equal >
+kuchukbaeva::HashTable< Key, Value, Hash, Equal >::HashTable(HashTable&& other) noexcept:
+  mass_(),
+  size_(0),
+  hashFn_(std::move(other.hashFn_)),
+  equalFn_(std::move(other.equalFn_))
 {
   swap(other);
 }
 
 template< class Key, class Value, class Hash, class Equal >
-kuchukbaeva::HashTable< Key, Value, Hash, Equal >& kuchukbaeva::HashTable< Key, Value, Hash, Equal >::operator=(const HashTable& other)
+kuchukbaeva::HashTable< Key, Value, Hash, Equal >&
+    kuchukbaeva::HashTable< Key, Value, Hash, Equal >::operator=(const HashTable& other)
 {
-  if (this != &other) {
+  if (this != &other)
+  {
     HashTable tmp(other);
     swap(tmp);
   }
@@ -107,9 +116,11 @@ kuchukbaeva::HashTable< Key, Value, Hash, Equal >& kuchukbaeva::HashTable< Key, 
 }
 
 template< class Key, class Value, class Hash, class Equal >
-kuchukbaeva::HashTable< Key, Value, Hash, Equal >& kuchukbaeva::HashTable< Key, Value, Hash, Equal >::operator=(HashTable&& other) noexcept
+kuchukbaeva::HashTable< Key, Value, Hash, Equal >&
+    kuchukbaeva::HashTable< Key, Value, Hash, Equal >::operator=(HashTable&& other) noexcept
 {
-  if (this != &other) {
+  if (this != &other)
+  {
     HashTable tmp(std::move(other));
     swap(tmp);
   }
@@ -127,8 +138,10 @@ template< class Key, class Value, class Hash, class Equal >
 void kuchukbaeva::HashTable< Key, Value, Hash, Equal >::add(const Key& k, const Value& v)
 {
   size_t idx = hashFn_(k) % mass_.getSize();
-  for (LIter< std::pair< Key, Value > > it = mass_[idx].begin(); it != mass_[idx].end(); ++it) {
-    if (equalFn_(it->first, k)) {
+  for (LIter< std::pair< Key, Value > > it = mass_[idx].begin(); it != mass_[idx].end(); ++it)
+  {
+    if (equalFn_(it->first, k))
+    {
       it->second = v;
       return;
     }
@@ -138,17 +151,18 @@ void kuchukbaeva::HashTable< Key, Value, Hash, Equal >::add(const Key& k, const 
 }
 
 template< class Key, class Value, class Hash, class Equal >
-Value kuchukbaeva::HashTable< Key, Value, Hash, Equal >::drop(const Key& k)
+void kuchukbaeva::HashTable< Key, Value, Hash, Equal >::drop(const Key& k)
 {
   size_t idx = hashFn_(k) % mass_.getSize();
   LIter< std::pair< Key, Value > > beforeIt = mass_[idx].beforeBegin();
   LIter< std::pair< Key, Value > > it = mass_[idx].begin();
-  while (it != mass_[idx].end()) {
-    if (equalFn_(it->first, k)) {
-      Value removedValue = std::move(it->second);
+  while (it != mass_[idx].end())
+  {
+    if (equalFn_(it->first, k))
+    {
       mass_[idx].eraseAfter(beforeIt);
       --size_;
-      return removedValue;
+      return;
     }
     ++it;
     ++beforeIt;
@@ -160,8 +174,10 @@ template< class Key, class Value, class Hash, class Equal >
 bool kuchukbaeva::HashTable< Key, Value, Hash, Equal >::has(const Key& k) const
 {
   size_t idx = hashFn_(k) % mass_.getSize();
-  for (LCIter< std::pair< Key, Value > > it = mass_[idx].cbegin(); it != mass_[idx].cend(); ++it) {
-    if (equalFn_(it->first, k)) {
+  for (LCIter< std::pair< Key, Value > > it = mass_[idx].cbegin(); it != mass_[idx].cend(); ++it)
+  {
+    if (equalFn_(it->first, k))
+    {
       return true;
     }
   }
@@ -169,26 +185,32 @@ bool kuchukbaeva::HashTable< Key, Value, Hash, Equal >::has(const Key& k) const
 }
 
 template< class Key, class Value, class Hash, class Equal >
-Value* kuchukbaeva::HashTable< Key, Value, Hash, Equal >::find(const Key& k)
+kuchukbaeva::HTIter< Key, Value, Hash, Equal >
+    kuchukbaeva::HashTable< Key, Value, Hash, Equal >::find(const Key& k)
 {
   size_t idx = hashFn_(k) % mass_.getSize();
-  for (LIter< std::pair< Key, Value > > it = mass_[idx].begin(); it != mass_[idx].end(); ++it) {
-    if (equalFn_(it->first, k)) {
-      return &(it->second);
+  for (LIter< std::pair< Key, Value > > it = mass_[idx].begin(); it != mass_[idx].end(); ++it)
+  {
+    if (equalFn_(it->first, k))
+    {
+      return HTIter< Key, Value, Hash, Equal >(&mass_[0], mass_.getSize(), idx, it);
     }
   }
-  return nullptr;
+  return end();
 }
 
 template< class Key, class Value, class Hash, class Equal >
 void kuchukbaeva::HashTable< Key, Value, Hash, Equal >::rehash(size_t slots)
 {
-  if (slots == 0) {
-    slots = 1;
+  if (slots == 0)
+  {
+    throw std::invalid_argument("Slots cannot be zero");
   }
   HashTable tmp(slots);
-  for (size_t i = 0; i < mass_.getSize(); ++i) {
-    for (LIter< std::pair< Key, Value > > it = mass_[i].begin(); it != mass_[i].end(); ++it) {
+  for (size_t i = 0; i < mass_.getSize(); ++i)
+  {
+    for (LIter< std::pair< Key, Value > > it = mass_[i].begin(); it != mass_[i].end(); ++it)
+    {
       tmp.add(it->first, it->second);
     }
   }
@@ -204,9 +226,11 @@ size_t kuchukbaeva::HashTable< Key, Value, Hash, Equal >::getSize() const
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTIter< Key, Value, Hash, Equal > kuchukbaeva::HashTable< Key, Value, Hash, Equal >::begin()
 {
-  for (size_t i = 0; i < mass_.getSize(); ++i) {
-    if (!mass_[i].isEmpty()) {
-      return HTIter< Key, Value, Hash, Equal >(&mass_, i, mass_[i].begin());
+  for (size_t i = 0; i < mass_.getSize(); ++i)
+  {
+    if (!mass_[i].isEmpty())
+    {
+      return HTIter< Key, Value, Hash, Equal >(&mass_[0], mass_.getSize(), i, mass_[i].begin());
     }
   }
   return end();
@@ -215,7 +239,7 @@ kuchukbaeva::HTIter< Key, Value, Hash, Equal > kuchukbaeva::HashTable< Key, Valu
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTIter< Key, Value, Hash, Equal > kuchukbaeva::HashTable< Key, Value, Hash, Equal >::end()
 {
-  return HTIter< Key, Value, Hash, Equal >(&mass_, mass_.getSize(), LIter< std::pair< Key, Value > >());
+  return HTIter< Key, Value, Hash, Equal >(nullptr, mass_.getSize(), mass_.getSize(), LIter< std::pair< Key, Value > >());
 }
 
 template< class Key, class Value, class Hash, class Equal >
@@ -233,9 +257,11 @@ kuchukbaeva::HTCiter< Key, Value, Hash, Equal > kuchukbaeva::HashTable< Key, Val
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTCiter< Key, Value, Hash, Equal > kuchukbaeva::HashTable< Key, Value, Hash, Equal >::cbegin() const
 {
-  for (size_t i = 0; i < mass_.getSize(); ++i) {
-    if (!mass_[i].isEmpty()) {
-      return HTCiter< Key, Value, Hash, Equal >(&mass_, i, mass_[i].cbegin());
+  for (size_t i = 0; i < mass_.getSize(); ++i)
+  {
+    if (!mass_[i].isEmpty())
+    {
+      return HTCiter< Key, Value, Hash, Equal >(&mass_[0], mass_.getSize(), i, mass_[i].cbegin());
     }
   }
   return cend();
@@ -244,7 +270,7 @@ kuchukbaeva::HTCiter< Key, Value, Hash, Equal > kuchukbaeva::HashTable< Key, Val
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTCiter< Key, Value, Hash, Equal > kuchukbaeva::HashTable< Key, Value, Hash, Equal >::cend() const
 {
-  return HTCiter< Key, Value, Hash, Equal >(&mass_, mass_.getSize(), LCIter< std::pair< Key, Value > >());
+  return HTCiter< Key, Value, Hash, Equal >(nullptr, mass_.getSize(), mass_.getSize(), LCIter< std::pair< Key, Value > >());
 }
 
 #endif

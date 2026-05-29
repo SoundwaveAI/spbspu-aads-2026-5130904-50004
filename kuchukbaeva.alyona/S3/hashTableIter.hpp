@@ -1,11 +1,12 @@
 #ifndef HASHTABLEITER_HPP
 #define HASHTABLEITER_HPP
 
-#include "vector.hpp"
-#include "../common/list.hpp"
 #include <utility>
+#include <list.hpp>
+#include "vector.hpp"
 
-namespace kuchukbaeva {
+namespace kuchukbaeva
+{
 
   template< class Key, class Value, class Hash, class Equal >
   class HashTable;
@@ -14,16 +15,12 @@ namespace kuchukbaeva {
   class HTCiter;
 
   template< class Key, class Value, class Hash, class Equal >
-  class HTIter {
+  class HTIter
+  {
   public:
     using pair_t = std::pair< Key, Value >;
-    using vector_t = Vector< List< pair_t > >;
 
-    HTIter(
-      vector_t* mass = nullptr,
-      size_t idx = 0,
-      LIter< pair_t > listIt = LIter< pair_t >()
-    );
+    HTIter();
 
     pair_t& operator*();
     pair_t* operator->();
@@ -37,7 +34,9 @@ namespace kuchukbaeva {
   private:
     friend class HashTable< Key, Value, Hash, Equal >;
     friend class HTCiter< Key, Value, Hash, Equal >;
-    vector_t* mass_;
+    HTIter(List< pair_t >* listsArray, size_t arraySize, size_t idx, LIter< pair_t > listIt);
+    List< pair_t >* listsArray_;
+    size_t arraySize_;
     size_t massIdx_;
     LIter< pair_t > listIt_;
   };
@@ -47,13 +46,8 @@ namespace kuchukbaeva {
   class HTCiter {
   public:
     using pair_t = std::pair< Key, Value >;
-    using vector_t = Vector< List< pair_t > >;
 
-    HTCiter(
-      const vector_t* mass = nullptr,
-      size_t idx = 0,
-      LCIter< pair_t > listIt = LCIter< pair_t >()
-    );
+    HTCiter();
     HTCiter(const HTIter< Key, Value, Hash, Equal >& other);
 
     const pair_t& operator*() const;
@@ -67,7 +61,9 @@ namespace kuchukbaeva {
 
   private:
     friend class HashTable< Key, Value, Hash, Equal >;
-    const vector_t* mass_;
+    HTCIter(const List< pair_t >* listsArray, size_t arraySize, size_t idx, LCIter< pair_t > listIt);
+    const List< pair_t >* listsArray_;
+    size_t arraySize_;
     size_t massIdx_;
     LCIter< pair_t > listIt_;
   };
@@ -75,14 +71,11 @@ namespace kuchukbaeva {
 }
 
 template< class Key, class Value, class Hash, class Equal >
-kuchukbaeva::HTIter< Key, Value, Hash, Equal >::HTIter(
-  vector_t* mass,
-  size_t idx,
-  LIter< pair_t > listIt
-) :
-  mass_(mass),
-  massIdx_(idx),
-  listIt_(listIt)
+kuchukbaeva::HTIter< Key, Value, Hash, Equal >::HTIter():
+  listsArray_(nullptr),
+  arraySize_(0),
+  massIdx_(o),
+  listIt_()
 {}
 
 template< class Key, class Value, class Hash, class Equal >
@@ -99,17 +92,22 @@ std::pair< Key, Value >* kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operato
 
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTIter< Key, Value, Hash, Equal >&
-kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operator++()
+    kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operator++()
 {
   ++listIt_;
-  if (mass_ && listIt_ == (*mass_)[massIdx_].end()) {
+  if (listsArray_ && listIt_ == listsArray_[massIdx_].end())
+  {
     ++massIdx_;
-    while (massIdx_ < mass_->getSize() && (*mass_)[massIdx_].isEmpty()) {
+    while (massIdx_ < arraySize_ && listsArray_[massIdx_].isEmpty())
+    {
       ++massIdx_;
     }
-    if (massIdx_ < mass_->getSize()) {
-      listIt_ = (*mass_)[massIdx_].begin();
-    } else {
+    if (massIdx_ < arraySize_)
+    {
+      listIt_ = listsArray_[massIdx_].begin();
+    }
+    else
+    {
       listIt_ = LIter< std::pair< Key, Value > >();
     }
   }
@@ -118,7 +116,7 @@ kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operator++()
 
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTIter< Key, Value, Hash, Equal >
-kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operator++(int)
+    kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operator++(int)
 {
   HTIter tmp = *this;
   ++(*this);
@@ -138,21 +136,17 @@ bool kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operator!=(const HTIter& ot
 }
 
 template< class Key, class Value, class Hash, class Equal >
-kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::HTCiter(
-  const vector_t* mass,
-  size_t idx,
-  LCIter< pair_t > listIt
-) :
-  mass_(mass),
+kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::HTCiter():
+  listsArray_(nullptr),
+  arraySize_(0),
   massIdx_(idx),
-  listIt_(listIt)
+  listIt_()
 {}
 
 template< class Key, class Value, class Hash, class Equal >
-kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::HTCiter(
-  const HTIter< Key, Value, Hash, Equal >& other
-) :
-  mass_(other.mass_),
+kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::HTCiter(const HTIter< Key, Value, Hash, Equal >& other):
+  listsArray_(other.listsArray_),
+  arraySize_(other.arraySize_),
   massIdx_(other.massIdx_),
   listIt_(other.listIt_)
 {}
@@ -171,17 +165,22 @@ const std::pair< Key, Value >* kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::
 
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTCiter< Key, Value, Hash, Equal >&
-kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::operator++()
+    kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::operator++()
 {
   ++listIt_;
-  if (mass_ && listIt_ == (*mass_)[massIdx_].cend()) {
+  if (listsArray_ && listIt_ == listsArray_[massIdx_].cend())
+  {
     ++massIdx_;
-    while (massIdx_ < mass_->getSize() && (*mass_)[massIdx_].isEmpty()) {
+    while (massIdx_ < arraySize_ && listsArray_[massIdx_].isEmpty())
+    {
       ++massIdx_;
     }
-    if (massIdx_ < mass_->getSize()) {
-      listIt_ = (*mass_)[massIdx_].cbegin();
-    } else {
+    if (massIdx_ < arraySize_)
+    {
+      listIt_ = listsArray_[massIdx_].cbegin();
+    }
+    else
+    {
       listIt_ = LCIter< std::pair< Key, Value > >();
     }
   }
@@ -190,7 +189,7 @@ kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::operator++()
 
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTCiter< Key, Value, Hash, Equal >
-kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::operator++(int)
+    kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::operator++(int)
 {
   HTCiter tmp = *this;
   ++(*this);

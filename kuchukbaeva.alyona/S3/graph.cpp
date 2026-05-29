@@ -1,5 +1,5 @@
-#include "graph.hpp"
 #include <algorithm>
+#include "graph.hpp"
 
 kuchukbaeva::Graph::Graph():
   vertexes_(),
@@ -8,70 +8,106 @@ kuchukbaeva::Graph::Graph():
 
 void kuchukbaeva::Graph::addVertex(const std::string& v)
 {
-  if (!hasVertex(v))
+  size_t left = 0;
+  size_t right = vertexes_.getSize();
+  while (left < right)
   {
-    vertexes_.pushBack(v);
-    for (size_t i = vertexes_.getSize() - 1; i > 0; --i)
+    size_t mid = left + (right - left) / 2;
+    if (vertexes_[mid] < v)
     {
-      if (vertexes_[i] < vertexes_[i - 1])
-      {
-        std::swap(vertexes_[i], vertexes_[i - 1]);
-      }
+      left = mid + 1;
+    }
+    else
+    {
+      right = mid;
     }
   }
+
+  if (left < vertexes_.getSize() && vertexes_[left] == v)
+  {
+    return;
+  }
+
+  Vector< std::string > newVertexes = vertexes_;
+  newVertexes.insert(left, v);
+  vertexes_.swap(newVertexes);
 }
 
 bool kuchukbaeva::Graph::hasVertex(const std::string& v) const noexcept
 {
-  for (size_t i = 0; i < vertexes_.getSize(); ++i)
+  size_t left = 0;
+  size_t right = vertexes_.getSize();
+  while (left < right)
   {
-    if (vertexes_[i] == v)
+    size_t mid = left + (right - left) / 2;
+    if (vertexes_[mid] < v)
     {
-      return true;
+      left = mid + 1;
+    }
+    else
+    {
+      right = mid;
     }
   }
-  return false;
+  return left < vertexes_.getSize() && vertexes_[left] == v;
 }
 
 void kuchukbaeva::Graph::addEdge(const std::string& src, const std::string& dest, unsigned int weight)
 {
-  addVertex(src);
-  addVertex(dest);
+  Graph copy = *this;
+  copy.addVertex(src);
+  copy.addVertex(dest);
+
   std::pair< std::string, std::string > key = std::make_pair(src, dest);
-  Vector< unsigned int >* weights = edges_.find(key);
-  if (weights)
+  if (copy.edges_.has(key))
   {
-    weights->pushBack(weight);
+    Vector< unsigned int > weights = *copy.edges_.find(key);
+    weights.pushBack(weight);
+    copy.edges_.add(key, weights);
   }
   else
   {
     Vector< unsigned int > newWeights;
     newWeights.pushBack(weight);
-    edges_.add(key, newWeights);
+    copy.edges_.add(key, newWeights);
   }
+  swap(copy);
 }
 
 bool kuchukbaeva::Graph::cutEdge(const std::string& src, const std::string& dest, unsigned int weight)
 {
   std::pair< std::string, std::string > key = std::make_pair(src, dest);
-  Vector< unsigned int >* weights = edges_.find(key);
-  if (!weights)
+  if (!edges_.has(key))
   {
     return false;
   }
-  for (size_t i = 0; i < weights->getSize(); ++i)
+
+  Graph copy = *this;
+  Vector< unsigned int > weights = *copy.edges_.find(key);
+  for (size_t i = 0; i < weights.getSize(); ++i)
   {
-    if ((*weights)[i] == weight)
+    if (weights[i] == weight)
     {
-      weights->erase(i);
-      if (weights->isEmpty())
+      weights.erase(i);
+      if (weights.isEmpty())
       {
-        edges_.drop(key);
+        copy.edges_.drop(key);
       }
+      else
+      {
+        copy.edges_.drop(key);
+      }
+      swap(copy);
       return true;
     }
   }
   return false;
+}
+
+void kuchukbaeva::Graph::swap(Graph& other) noexcept
+{
+  vertexes_.swap(other.vertexes_);
+  edges_.swap(other.edges_);
 }
 
 kuchukbaeva::Graph kuchukbaeva::Graph::merge(const Graph& other) const
@@ -121,6 +157,7 @@ const kuchukbaeva::Vector< std::string >& kuchukbaeva::Graph::getVertexes() cons
 
 void kuchukbaeva::Graph::getOutbound(const std::string& v, Vector< std::pair< std::string, unsigned int > >& out) const
 {
+  Vector< std::pair< std::string, unsigned int > > out;
   for (auto it = edges_.cbegin(); it != edges_.cend(); ++it)
   {
     if (it->first.first == v)
@@ -131,7 +168,7 @@ void kuchukbaeva::Graph::getOutbound(const std::string& v, Vector< std::pair< st
       }
     }
   }
-  sortPairs(out);
+  return sortPairs(out);
 }
 
 void kuchukbaeva::Graph::getInbound(const std::string& v, Vector< std::pair< std::string, unsigned int > >& out) const
@@ -161,4 +198,5 @@ void kuchukbaeva::Graph::sortPairs(Vector< std::pair< std::string, unsigned int 
       }
     }
   }
+  return vec;
 }

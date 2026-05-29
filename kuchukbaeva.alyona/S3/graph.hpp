@@ -6,9 +6,11 @@
 #include <string>
 #include <utility>
 
-namespace kuchukbaeva {
+namespace kuchukbaeva
+{
 
-  struct EdgeHash {
+  struct EdgeHash
+  {
     std::size_t operator()(const std::pair< std::string, std::string >& p) const
     {
       boost::hash2::siphash_64 hasher;
@@ -18,21 +20,21 @@ namespace kuchukbaeva {
     }
   };
 
-  struct EdgeEqual {
+  struct EdgeEqual
+  {
     bool operator()(const std::pair< std::string, std::string >& a, const std::pair< std::string, std::string >& b) const
     {
       return a.first == b.first && a.second == b.second;
     }
   };
-  class Graph {
-
+  class Graph
+  {
   public:
     Graph();
     void addVertex(const std::string& v);
     bool hasVertex(const std::string& v) const noexcept;
     void addEdge(const std::string& src, const std::string& dest, unsigned int weight);
     bool cutEdge(const std::string& src, const std::string& dest, unsigned int weight);
-
     Graph merge(const Graph& other) const;
     Graph extract(const Vector< std::string >& vertices) const;
 
@@ -44,6 +46,7 @@ namespace kuchukbaeva {
     Vector< std::string > vertexes_;
     HashTable< std::pair< std::string, std::string >, Vector< unsigned int >, EdgeHash, EdgeEqual > edges_;
     void sortPairs(Vector< std::pair< std::string, unsigned int > >& vec) const;
+    void swap(Graph& other) noexcept;
   };
 }
 
