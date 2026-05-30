@@ -59,9 +59,10 @@ void kuchukbaeva::Graph::addEdge(const std::string& src, const std::string& dest
   copy.addVertex(dest);
 
   std::pair< std::string, std::string > key = std::make_pair(src, dest);
-  if (copy.edges_.has(key))
+  HTIter< std::pair< std::string, std::string >, Vector< unsigned int >, EdgeHash, EdgeEqual > it = copy.edges_.find(key);
+  if (it != copy.edges_.end())
   {
-    Vector< unsigned int > weights = *copy.edges_.find(key);
+    Vector< unsigned int > weights = it->second;
     weights.pushBack(weight);
     copy.edges_.add(key, weights);
   }
@@ -83,7 +84,8 @@ bool kuchukbaeva::Graph::cutEdge(const std::string& src, const std::string& dest
   }
 
   Graph copy = *this;
-  Vector< unsigned int > weights = *copy.edges_.find(key);
+  HTIter< std::pair< std::string, std::string >, Vector< unsigned int >, EdgeHash, EdgeEqual > it = copy.edges_.find(key);
+  Vector< unsigned int > weights = it->second;
   for (size_t i = 0; i < weights.getSize(); ++i)
   {
     if (weights[i] == weight)
@@ -95,7 +97,7 @@ bool kuchukbaeva::Graph::cutEdge(const std::string& src, const std::string& dest
       }
       else
       {
-        copy.edges_.drop(key);
+        copy.edges_.add(key, weights);
       }
       swap(copy);
       return true;
@@ -157,33 +159,36 @@ const kuchukbaeva::Vector< std::string >& kuchukbaeva::Graph::getVertexes() cons
 
 void kuchukbaeva::Graph::getOutbound(const std::string& v, Vector< std::pair< std::string, unsigned int > >& out) const
 {
-  Vector< std::pair< std::string, unsigned int > > out;
+  Vector< std::pair< std::string, unsigned int > > temp;
   for (auto it = edges_.cbegin(); it != edges_.cend(); ++it)
   {
     if (it->first.first == v)
     {
       for (size_t i = 0; i < it->second.getSize(); ++i)
       {
-        out.pushBack(std::make_pair(it->first.second, it->second[i]));
+        temp.pushBack(std::make_pair(it->first.second, it->second[i]));
       }
     }
   }
-  return sortPairs(out);
+  sortPairs(temp);
+  out.swap(temp);
 }
 
 void kuchukbaeva::Graph::getInbound(const std::string& v, Vector< std::pair< std::string, unsigned int > >& out) const
 {
+  Vector< std::pair< syd::string, unsigned int > > temp;
   for (auto it = edges_.cbegin(); it != edges_.cend(); ++it)
   {
     if (it->first.second == v)
     {
       for (size_t i = 0; i < it->second.getSize(); ++i)
       {
-        out.pushBack(std::make_pair(it->first.first, it->second[i]));
+        temp.pushBack(std::make_pair(it->first.first, it->second[i]));
       }
     }
   }
-  sortPairs(out);
+  sortPairs(temp);
+  out.swap(temp);
 }
 
 void kuchukbaeva::Graph::sortPairs(Vector< std::pair< std::string, unsigned int > >& vec) const

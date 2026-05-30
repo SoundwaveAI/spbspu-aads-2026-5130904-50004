@@ -61,7 +61,7 @@ namespace kuchukbaeva
 
   private:
     friend class HashTable< Key, Value, Hash, Equal >;
-    HTCIter(const List< pair_t >* listsArray, size_t arraySize, size_t idx, LCIter< pair_t > listIt);
+    HTCiter(const List< pair_t >* listsArray, size_t arraySize, size_t idx, LCIter< pair_t > listIt);
     const List< pair_t >* listsArray_;
     size_t arraySize_;
     size_t massIdx_;
@@ -74,7 +74,7 @@ template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTIter< Key, Value, Hash, Equal >::HTIter():
   listsArray_(nullptr),
   arraySize_(0),
-  massIdx_(o),
+  massIdx_(0),
   listIt_()
 {}
 
@@ -92,7 +92,7 @@ std::pair< Key, Value >* kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operato
 
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTIter< Key, Value, Hash, Equal >&
-    kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operator++()
+  kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operator++()
 {
   ++listIt_;
   if (listsArray_ && listIt_ == listsArray_[massIdx_].end())
@@ -116,7 +116,7 @@ kuchukbaeva::HTIter< Key, Value, Hash, Equal >&
 
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTIter< Key, Value, Hash, Equal >
-    kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operator++(int)
+  kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operator++(int)
 {
   HTIter tmp = *this;
   ++(*this);
@@ -139,7 +139,7 @@ template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::HTCiter():
   listsArray_(nullptr),
   arraySize_(0),
-  massIdx_(idx),
+  massIdx_(0),
   listIt_()
 {}
 
@@ -165,7 +165,7 @@ const std::pair< Key, Value >* kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::
 
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTCiter< Key, Value, Hash, Equal >&
-    kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::operator++()
+  kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::operator++()
 {
   ++listIt_;
   if (listsArray_ && listIt_ == listsArray_[massIdx_].cend())
@@ -189,7 +189,7 @@ kuchukbaeva::HTCiter< Key, Value, Hash, Equal >&
 
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTCiter< Key, Value, Hash, Equal >
-    kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::operator++(int)
+  kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::operator++(int)
 {
   HTCiter tmp = *this;
   ++(*this);

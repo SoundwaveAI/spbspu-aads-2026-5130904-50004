@@ -115,7 +115,7 @@ kuchukbaeva::Vector< T >& kuchukbaeva::Vector< T >::operator=(const Vector< T >&
   if (this != &rhs)
   {
     Vector< T > copy(rhs);
-    swap(copy)
+    swap(copy);
   }
   return *this;
 }
