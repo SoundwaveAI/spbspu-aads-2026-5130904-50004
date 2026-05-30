@@ -178,7 +178,10 @@ void kuchukbaeva::Vector< T >::pushBack(const T& value)
       ::operator delete(newData);
       throw;
     }
-    clear();
+    for (size_t j = 0; j < size_; ++j)
+    {
+      data_[j].~T();
+    }
     ::operator delete(data_);
     data_ = newData;
     capacity_ = newCap;

@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(testExceptionSafetyCopyAndSwap)
 BOOST_AUTO_TEST_CASE(testIterators)
 {
   kuchukbaeva::HashTable< std::string, int > ht(4);
-  ht.add("A", 10");
+  ht.add("A", 10);
   ht.add("B", 20);
 
   size_t count = 0;
