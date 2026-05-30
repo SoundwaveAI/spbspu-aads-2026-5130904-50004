@@ -38,7 +38,7 @@ namespace kuchukbaeva
   public:
     explicit HashTable(size_t slots = 16);
     HashTable(const HashTable& other);
-    HashTable(HashTable&& other) noexcept;
+    HashTable(HashTable&& other);
     ~HashTable() = default;
 
     HashTable& operator=(const HashTable& other);

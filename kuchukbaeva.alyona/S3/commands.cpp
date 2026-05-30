@@ -207,7 +207,7 @@ void kuchukbaeva::Application::cmdVertexes(Application* app, const Vector< std::
     throwInval();
   }
   auto it = app->graphs_.find(args[1]);
-  if (it !== app->graphs_.end())
+  if (it == app->graphs_.end())
   {
     throwInval();
   }
@@ -306,7 +306,7 @@ void kuchukbaeva::Application::cmdBind(Application* app, const Vector< std::stri
     throwInval();
   }
   auto it = app->graphs_.find(args[1]);
-  if (it == app->graphs_end())
+  if (it == app->graphs_.end())
   {
     throwInval();
   }
@@ -321,7 +321,7 @@ void kuchukbaeva::Application::cmdCut(Application* app, const Vector< std::strin
     throwInval();
   }
   auto it = app->graphs_.find(args[1]);
-  if (it == app->graphs_end() || !it->second.cutEdge(args[2], args[3], weight))
+  if (it == app->graphs_.end() || !it->second.cutEdge(args[2], args[3], weight))
   {
     throwInval();
   }
@@ -368,7 +368,7 @@ void kuchukbaeva::Application::cmdMerge(Application* app, const Vector< std::str
   {
     throwInval();
   }
-  app->graphs_.add(args[1], it1->second.merge(it2->second);
+  app->graphs_.add(args[1], it1->second.merge(it2->second));
 }
 
 void kuchukbaeva::Application::cmdExtract(Application* app, const Vector< std::string >& args)

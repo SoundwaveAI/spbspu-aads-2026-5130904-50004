@@ -20,6 +20,7 @@ namespace kuchukbaeva {
   private:
     void loadFromFile(const std::string& filename);
     void processLine(const std::string& line);
+    void throwInval();
     static void cmdGraphs(Application* app, const Vector< std::string >& args);
     static void cmdVertexes(Application* app, const Vector< std::string >& args);
     static void cmdOutbound(Application* app, const Vector< std::string >& args);

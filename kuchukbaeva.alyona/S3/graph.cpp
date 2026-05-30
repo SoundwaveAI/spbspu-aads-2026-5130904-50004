@@ -176,7 +176,7 @@ void kuchukbaeva::Graph::getOutbound(const std::string& v, Vector< std::pair< st
 
 void kuchukbaeva::Graph::getInbound(const std::string& v, Vector< std::pair< std::string, unsigned int > >& out) const
 {
-  Vector< std::pair< syd::string, unsigned int > > temp;
+  Vector< std::pair< std::string, unsigned int > > temp;
   for (auto it = edges_.cbegin(); it != edges_.cend(); ++it)
   {
     if (it->first.second == v)
