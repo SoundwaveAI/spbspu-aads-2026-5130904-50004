@@ -5,14 +5,17 @@
 #include "vector.hpp"
 #include <string>
 
-namespace kuchukbaeva {
-  template< typename T >
+namespace kuchukbaeva
+{
+  template< class T >
   void sortVector(Vector< T >& vec);
 
   Vector< std::string > splitString(const std::string& str);
   bool tryParseUInt(const std::string& str, unsigned int& out);
+  void throwInval();
 
-  class Application {
+  class Application
+  {
   public:
     Application();
     void run(const std::string& filename);
@@ -20,7 +23,6 @@ namespace kuchukbaeva {
   private:
     void loadFromFile(const std::string& filename);
     void processLine(const std::string& line);
-    void throwInval();
     static void cmdGraphs(Application* app, const Vector< std::string >& args);
     static void cmdVertexes(Application* app, const Vector< std::string >& args);
     static void cmdOutbound(Application* app, const Vector< std::string >& args);
@@ -36,7 +38,6 @@ namespace kuchukbaeva {
     HashTable< std::string, CommandFunc > commands_;
     HashTable< std::string, Graph > graphs_;
   };
-
 }
 
 #endif

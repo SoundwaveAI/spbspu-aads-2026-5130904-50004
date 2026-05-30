@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include "commands.hpp"
 
-template< typename T >
+template< class T >
 void kuchukbaeva::sortVector(Vector< T >& vec)
 {
   size_t n = vec.getSize();
