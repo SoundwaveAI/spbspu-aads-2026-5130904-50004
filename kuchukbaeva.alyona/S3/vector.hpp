@@ -47,6 +47,13 @@ kuchukbaeva::Vector< T >::Vector() noexcept:
 {}
 
 template< class T >
+kuchukbaeva::Vector< T >::Vector(size_t size):
+  data_(size ? static_cast< T* >(::operator new(size * sizeof(T))) : nullptr),
+  size_(0),
+  capacity_(size)
+{}
+
+template< class T >
 kuchukbaeva::Vector< T >::~Vector()
 {
   clear();

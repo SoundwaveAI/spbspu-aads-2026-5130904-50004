@@ -152,6 +152,24 @@ kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::HTCiter(const HTIter< Key, Valu
 {}
 
 template< class Key, class Value, class Hash, class Equal >
+kuchukbaeva::HTIter< Key, Value, Hash, Equal >::HTIter(List< pair_t >* listsArray,
+  size_t arraySize, size_t idx, LIter< pair_t > listIt):
+  listsArray_(listsArray),
+  arraySize_(arraySize),
+  massIdx_(idx),
+  listIt_(listIt)
+{}
+
+template< class Key, class Value, class Hash, class Equal >
+kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::HTCiter(const List< pair_t >* listsArray,
+  size_t arraySize, size_t idx, LCIter< pair_t > listIt):
+  listsArray_(listsArray),
+  arraySize_(arraySize),
+  massIdx_(idx),
+  listIt_(listIt)
+{}
+
+template< class Key, class Value, class Hash, class Equal >
 const std::pair< Key, Value >& kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::operator*() const
 {
   return *listIt_;
