@@ -45,7 +45,8 @@ namespace kuchukbaeva
   private:
     Vector< std::string > vertexes_;
     HashTable< std::pair< std::string, std::string >, Vector< unsigned int >, EdgeHash, EdgeEqual > edges_;
-    void sortPairs(Vector< std::pair< std::string, unsigned int > >& vec) const;
+    Vector< std::pair< std::string, unsigned int > >
+      sortPairs(const Vector< std::pair< std::string, unsigned int > >& vec) const;
     void swap(Graph& other) noexcept;
   };
 }

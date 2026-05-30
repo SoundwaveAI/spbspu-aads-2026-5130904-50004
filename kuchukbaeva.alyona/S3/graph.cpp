@@ -170,8 +170,7 @@ void kuchukbaeva::Graph::getOutbound(const std::string& v, Vector< std::pair< st
       }
     }
   }
-  sortPairs(temp);
-  out.swap(temp);
+  out = sortPairs(temp);
 }
 
 void kuchukbaeva::Graph::getInbound(const std::string& v, Vector< std::pair< std::string, unsigned int > >& out) const
@@ -187,21 +186,22 @@ void kuchukbaeva::Graph::getInbound(const std::string& v, Vector< std::pair< std
       }
     }
   }
-  sortPairs(temp);
-  out.swap(temp);
+  out = sortPairs(temp);
 }
 
-void kuchukbaeva::Graph::sortPairs(Vector< std::pair< std::string, unsigned int > >& vec) const
+kuchukbaeva::Vector< std::pair< std::string, unsigned int > >
+  kuchukbaeva::Graph::sortPairs(const Vector< std::pair< std::string, unsigned int > >& vec) const
 {
-  for (size_t i = 0; i < vec.getSize(); ++i)
+  Vector< std::pair< std::string, unsigned int > > copy = vec;
+  for (size_t i = 0; i < copy.getSize(); ++i)
   {
-    for (size_t j = i + 1; j < vec.getSize(); ++j)
+    for (size_t j = i + 1; j < copy.getSize(); ++j)
     {
-      if (vec[j].first < vec[i].first || (vec[j].first == vec[i].first && vec[j].second < vec[i].second))
+      if (copy[j].first < copy[i].first || (copy[j].first == copy[i].first && copy[j].second < copy[i].second))
       {
-        std::swap(vec[i], vec[j]);
+        std::swap(copy[i], copy[j]);
       }
     }
   }
-  return vec;
+  return copy;
 }
