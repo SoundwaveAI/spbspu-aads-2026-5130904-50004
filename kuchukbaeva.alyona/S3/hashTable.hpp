@@ -208,6 +208,21 @@ kuchukbaeva::HTIter< Key, Value, Hash, Equal >
 }
 
 template< class Key, class Value, class Hash, class Equal >
+kuchukbaeva::HTCiter< Key, Value, Hash, Equal >
+  kuchukbaeva::HashTable< Key, Value, Hash, Equal >::find(const Key& k) const
+{
+  size_t idx = hashFn_(k) % mass_.getSize();
+  for (LCIter< std::pair< Key, Value > > it = mass_[idx].cbegin(); it != mass_[idx].cend(); ++it)
+  {
+    if (equalFn_(it->first, k))
+    {
+      return HTCiter< Key, Value, Hash, Equal >(&mass_[0], mass_.getSize(), idx, it);
+    }
+  }
+  return cend();
+}
+
+template< class Key, class Value, class Hash, class Equal >
 void kuchukbaeva::HashTable< Key, Value, Hash, Equal >::rehash(size_t slots)
 {
   if (slots == 0)
