@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <stdexcept>
 #include <utility>
+#include <new>
 
 namespace kuchukbaeva
 {
@@ -109,10 +110,22 @@ kuchukbaeva::Vector< T >::Vector(const Vector< T >& rhs):
   size_(0),
   capacity_(rhs.capacity_)
 {
-  for (size_t i = 0; i < rhs.size_; ++i)
+  try
   {
-    new (data_ + i) T(rhs.data_[i]);
-    ++size_;
+    for (size_t i = 0; i < rhs.size_; ++i)
+    {
+      new (data_ + i) T(rhs.data_[i]);
+      ++size_;
+    }
+  }
+  catch (...)
+  {
+    for (size_t i = 0; i < size_; ++i)
+    {
+      data_[i].~T();
+    }
+    ::operator delete(data_);
+    throw;
   }
 }
 
