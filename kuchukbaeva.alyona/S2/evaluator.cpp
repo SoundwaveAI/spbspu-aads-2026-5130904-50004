@@ -1,14 +1,13 @@
+#include "evaluator.hpp"
 #include <stdexcept>
 #include <limits>
 #include <cctype>
 #include <string>
-#include "evaluator.hpp"
 #include "stack.hpp"
 
 namespace
 {
   using lim_t = std::numeric_limits< long long >;
-
   struct OpLess
   {
     static int getPrecedence(const std::string& op)
@@ -172,7 +171,8 @@ long long kuchukbaeva::concatenateNumbers(long long a, long long b)
   return safeAdd(safeMul(a, multiplier), b);
 }
 
-long long kuchukbaeva::evaluateExpression(const std::string& expression) {
+long long kuchukbaeva::evaluateExpression(const std::string& expression)
+{
   Stack< long long > values;
   Stack< std::string > ops;
 

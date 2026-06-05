@@ -6,15 +6,18 @@
 
 int main(int argc, char* argv[])
 {
-  if (argc > 2) {
+  if (argc > 2)
+  {
     std::cerr << "Usage: ./lab [filename]\n";
     return 1;
   }
 
   std::ifstream file;
-  if (argc == 2) {
+  if (argc == 2)
+  {
     file.open(argv[1]);
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
       std::cerr << "Cannot read file " << argv[1] << "\n";
       return 1;
     }
@@ -23,7 +26,6 @@ int main(int argc, char* argv[])
   std::istream& in = file.is_open() ? static_cast< std::istream& >(file) : std::cin;
   kuchukbaeva::Stack< long long > results;
   std::string line;
-
   try
   {
     while (std::getline(in, line))

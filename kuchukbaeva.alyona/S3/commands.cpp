@@ -1,7 +1,7 @@
+#include "commands.hpp"
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
-#include "commands.hpp"
 
 template< class T >
 void kuchukbaeva::sortVector(Vector< T >& vec)

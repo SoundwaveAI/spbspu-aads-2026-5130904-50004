@@ -267,7 +267,8 @@ kuchukbaeva::HTIter< Key, Value, Hash, Equal >
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTIter< Key, Value, Hash, Equal > kuchukbaeva::HashTable< Key, Value, Hash, Equal >::end()
 {
-  return HTIter< Key, Value, Hash, Equal >(nullptr, mass_.getSize(), mass_.getSize(), LIter< std::pair< Key, Value > >());
+  return HTIter< Key, Value, Hash, Equal >(nullptr, mass_.getSize(),
+    mass_.getSize(), LIter< std::pair< Key, Value > >());
 }
 
 template< class Key, class Value, class Hash, class Equal >
@@ -298,7 +299,8 @@ kuchukbaeva::HTCiter< Key, Value, Hash, Equal > kuchukbaeva::HashTable< Key, Val
 template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HTCiter< Key, Value, Hash, Equal > kuchukbaeva::HashTable< Key, Value, Hash, Equal >::cend() const
 {
-  return HTCiter< Key, Value, Hash, Equal >(nullptr, mass_.getSize(), mass_.getSize(), LCIter< std::pair< Key, Value > >());
+  return HTCiter< Key, Value, Hash, Equal >(nullptr, mass_.getSize(),
+    mass_.getSize(), LCIter< std::pair< Key, Value > >());
 }
 
 #endif

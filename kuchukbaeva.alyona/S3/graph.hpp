@@ -1,14 +1,13 @@
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
-#include "vector.hpp"
-#include "hashTable.hpp"
 #include <string>
 #include <utility>
+#include "vector.hpp"
+#include "hashTable.hpp"
 
 namespace kuchukbaeva
 {
-
   struct EdgeHash
   {
     std::size_t operator()(const std::pair< std::string, std::string >& p) const
@@ -27,6 +26,7 @@ namespace kuchukbaeva
       return a.first == b.first && a.second == b.second;
     }
   };
+
   class Graph
   {
   public:
@@ -39,8 +39,8 @@ namespace kuchukbaeva
     Graph extract(const Vector< std::string >& vertices) const;
 
     const Vector< std::string >& getVertexes() const noexcept;
-    void getOutbound(const std::string& v, Vector< std::pair < std::string, unsigned int > >& out) const;
-    void getInbound(const std::string& v, Vector< std::pair < std::string, unsigned int > >& out) const;
+    void getOutbound(const std::string& v, Vector< std::pair< std::string, unsigned int > >& out) const;
+    void getInbound(const std::string& v, Vector< std::pair< std::string, unsigned int > >& out) const;
 
   private:
     Vector< std::string > vertexes_;

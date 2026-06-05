@@ -54,7 +54,8 @@ BOOST_AUTO_TEST_CASE(testStackConstTop)
   BOOST_CHECK_EQUAL(constStack.top(), 42);
 }
 
-BOOST_AUTO_TEST_CASE(testStackException) {
+BOOST_AUTO_TEST_CASE(testStackException)
+{
   kuchukbaeva::Stack< int > stack;
   BOOST_CHECK_THROW(stack.top(), std::out_of_range);
   BOOST_CHECK_THROW(stack.pop(), std::out_of_range);
