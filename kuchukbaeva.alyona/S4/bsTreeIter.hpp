@@ -4,13 +4,14 @@
 #include "treeNode.hpp"
 #include "bsTraverse.hpp"
 
-namespace kuchukbaeva {
-
+namespace kuchukbaeva
+{
   template< class Key, class Value >
   class BSTConstIterator;
 
   template< class Key, class Value >
-  class BSTIterator {
+  class BSTIterator
+  {
   public:
     using Node = TreeNode< Key, Value >;
 
@@ -35,7 +36,8 @@ namespace kuchukbaeva {
   };
 
   template< class Key, class Value >
-  class BSTConstIterator {
+  class BSTConstIterator
+  {
   public:
     using Node = TreeNode< Key, Value >;
 
@@ -56,7 +58,6 @@ namespace kuchukbaeva {
 
   private:
     Node* node_;
-
     template< class K, class V, class C > friend class BSTree;
   };
 }
@@ -72,48 +73,56 @@ kuchukbaeva::BSTIterator< Key, Value >::BSTIterator(Node* node) noexcept:
 {}
 
 template< class Key, class Value >
-std::pair< const Key, Value >& kuchukbaeva::BSTIterator< Key, Value >::operator*() const noexcept {
+std::pair< const Key, Value >& kuchukbaeva::BSTIterator< Key, Value >::operator*() const noexcept
+{
   return node_->data_;
 }
 
 template< class Key, class Value >
-std::pair< const Key, Value >* kuchukbaeva::BSTIterator< Key, Value >::operator->() const noexcept {
+std::pair< const Key, Value >* kuchukbaeva::BSTIterator< Key, Value >::operator->() const noexcept
+{
   return &(node_->data_);
 }
 
 template< class Key, class Value >
-kuchukbaeva::BSTIterator< Key, Value >& kuchukbaeva::BSTIterator< Key, Value >::operator++() noexcept {
+kuchukbaeva::BSTIterator< Key, Value >& kuchukbaeva::BSTIterator< Key, Value >::operator++() noexcept
+{
   node_ = next(node_);
   return *this;
 }
 
 template< class Key, class Value >
-kuchukbaeva::BSTIterator< Key, Value > kuchukbaeva::BSTIterator< Key, Value >::operator++(int) noexcept {
+kuchukbaeva::BSTIterator< Key, Value > kuchukbaeva::BSTIterator< Key, Value >::operator++(int) noexcept
+{
   BSTIterator tmp(*this);
   ++(*this);
   return tmp;
 }
 
 template< class Key, class Value >
-kuchukbaeva::BSTIterator< Key, Value >& kuchukbaeva::BSTIterator< Key, Value >::operator--() noexcept {
+kuchukbaeva::BSTIterator< Key, Value >& kuchukbaeva::BSTIterator< Key, Value >::operator--() noexcept
+{
   node_ = previous(node_);
   return *this;
 }
 
 template< class Key, class Value >
-kuchukbaeva::BSTIterator< Key, Value > kuchukbaeva::BSTIterator< Key, Value >::operator--(int) noexcept {
+kuchukbaeva::BSTIterator< Key, Value > kuchukbaeva::BSTIterator< Key, Value >::operator--(int) noexcept
+{
   BSTIterator tmp(*this);
   --(*this);
   return tmp;
 }
 
 template< class Key, class Value >
-bool kuchukbaeva::BSTIterator< Key, Value >::operator==(const BSTIterator& other) const noexcept {
+bool kuchukbaeva::BSTIterator< Key, Value >::operator==(const BSTIterator& other) const noexcept
+{
   return node_ == other.node_;
 }
 
 template< class Key, class Value >
-bool kuchukbaeva::BSTIterator< Key, Value >::operator!=(const BSTIterator& other) const noexcept {
+bool kuchukbaeva::BSTIterator< Key, Value >::operator!=(const BSTIterator& other) const noexcept
+{
   return !(*this == other);
 }
 
@@ -133,48 +142,56 @@ kuchukbaeva::BSTConstIterator< Key, Value >::BSTConstIterator(const BSTIterator<
 {}
 
 template< class Key, class Value >
-const std::pair< const Key, Value >& kuchukbaeva::BSTConstIterator< Key, Value >::operator*() const noexcept {
+const std::pair< const Key, Value >& kuchukbaeva::BSTConstIterator< Key, Value >::operator*() const noexcept
+{
   return node_->data_;
 }
 
 template< class Key, class Value >
-const std::pair< const Key, Value >* kuchukbaeva::BSTConstIterator< Key, Value >::operator->() const noexcept {
+const std::pair< const Key, Value >* kuchukbaeva::BSTConstIterator< Key, Value >::operator->() const noexcept
+{
   return &(node_->data_);
 }
 
 template< class Key, class Value >
-kuchukbaeva::BSTConstIterator< Key, Value >& kuchukbaeva::BSTConstIterator< Key, Value >::operator++() noexcept {
+kuchukbaeva::BSTConstIterator< Key, Value >& kuchukbaeva::BSTConstIterator< Key, Value >::operator++() noexcept
+{
   node_ = next(node_);
   return *this;
 }
 
 template< class Key, class Value >
-kuchukbaeva::BSTConstIterator< Key, Value > kuchukbaeva::BSTConstIterator< Key, Value >::operator++(int) noexcept {
+kuchukbaeva::BSTConstIterator< Key, Value > kuchukbaeva::BSTConstIterator< Key, Value >::operator++(int) noexcept
+{
   BSTConstIterator tmp(*this);
   ++(*this);
   return tmp;
 }
 
 template< class Key, class Value >
-kuchukbaeva::BSTConstIterator< Key, Value >& kuchukbaeva::BSTConstIterator< Key, Value >::operator--() noexcept {
+kuchukbaeva::BSTConstIterator< Key, Value >& kuchukbaeva::BSTConstIterator< Key, Value >::operator--() noexcept
+{
   node_ = previous(node_);
   return *this;
 }
 
 template< class Key, class Value >
-kuchukbaeva::BSTConstIterator< Key, Value > kuchukbaeva::BSTConstIterator< Key, Value >::operator--(int) noexcept {
+kuchukbaeva::BSTConstIterator< Key, Value > kuchukbaeva::BSTConstIterator< Key, Value >::operator--(int) noexcept
+{
   BSTConstIterator tmp(*this);
   --(*this);
   return tmp;
 }
 
-template<class Key, class Value>
-bool kuchukbaeva::BSTConstIterator< Key, Value >::operator==(const BSTConstIterator& other) const noexcept {
+template< class Key, class Value>
+bool kuchukbaeva::BSTConstIterator< Key, Value >::operator==(const BSTConstIterator& other) const noexcept
+{
   return node_ == other.node_;
 }
 
 template< class Key, class Value >
-bool kuchukbaeva::BSTConstIterator< Key, Value >::operator!=(const BSTConstIterator& other) const noexcept {
+bool kuchukbaeva::BSTConstIterator< Key, Value >::operator!=(const BSTConstIterator& other) const noexcept
+{
   return !(*this == other);
 }
 

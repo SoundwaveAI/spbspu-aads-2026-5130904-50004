@@ -3,13 +3,13 @@
 
 #include <utility>
 
-namespace kuchukbaeva {
-
+namespace kuchukbaeva
+{
   template< class Key, class Value >
-  struct TreeNode {
+  struct TreeNode
+  {
     TreeNode();
     TreeNode(const Key& key, const Value& value, TreeNode* parent = nullptr);
-
     std::pair< const Key, Value > data_;
     TreeNode* left_;
     TreeNode* right_;
