@@ -1,5 +1,5 @@
-#include <algorithm>
 #include "graph.hpp"
+#include <algorithm>
 
 kuchukbaeva::Graph::Graph():
   vertexes_(),
@@ -59,7 +59,8 @@ void kuchukbaeva::Graph::addEdge(const std::string& src, const std::string& dest
   copy.addVertex(dest);
 
   std::pair< std::string, std::string > key = std::make_pair(src, dest);
-  HTIter< std::pair< std::string, std::string >, Vector< unsigned int >, EdgeHash, EdgeEqual > it = copy.edges_.find(key);
+  HTIter< std::pair< std::string, std::string >, Vector< unsigned int >, EdgeHash,
+    EdgeEqual > it = copy.edges_.find(key);
   if (it != copy.edges_.end())
   {
     Vector< unsigned int > weights = it->second;
@@ -84,7 +85,8 @@ bool kuchukbaeva::Graph::cutEdge(const std::string& src, const std::string& dest
   }
 
   Graph copy = *this;
-  HTIter< std::pair< std::string, std::string >, Vector< unsigned int >, EdgeHash, EdgeEqual > it = copy.edges_.find(key);
+  HTIter< std::pair< std::string, std::string >, Vector< unsigned int >, EdgeHash,
+    EdgeEqual > it = copy.edges_.find(key);
   Vector< unsigned int > weights = it->second;
   for (size_t i = 0; i < weights.getSize(); ++i)
   {

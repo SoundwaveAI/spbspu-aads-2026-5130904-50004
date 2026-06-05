@@ -1,15 +1,15 @@
 #ifndef COMMANDS_HPP
 #define COMMANDS_HPP
+
+#include <string>
 #include "hashTable.hpp"
 #include "graph.hpp"
 #include "vector.hpp"
-#include <string>
 
 namespace kuchukbaeva
 {
   template< class T >
   void sortVector(Vector< T >& vec);
-
   Vector< std::string > splitString(const std::string& str);
   bool tryParseUInt(const std::string& str, unsigned int& out);
   void throwInval();

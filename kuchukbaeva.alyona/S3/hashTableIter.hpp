@@ -7,7 +7,6 @@
 
 namespace kuchukbaeva
 {
-
   template< class Key, class Value, class Hash, class Equal >
   class HashTable;
 
@@ -41,9 +40,9 @@ namespace kuchukbaeva
     LIter< pair_t > listIt_;
   };
 
-
   template< class Key, class Value, class Hash, class Equal >
-  class HTCiter {
+  class HTCiter
+  {
   public:
     using pair_t = std::pair< Key, Value >;
 
@@ -67,7 +66,6 @@ namespace kuchukbaeva
     size_t massIdx_;
     LCIter< pair_t > listIt_;
   };
-
 }
 
 template< class Key, class Value, class Hash, class Equal >
