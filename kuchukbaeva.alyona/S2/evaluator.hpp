@@ -3,7 +3,8 @@
 
 #include <string>
 
-namespace kuchukbaeva {
+namespace kuchukbaeva
+{
   long long evaluateExpression(const std::string& expression);
   long long concatenateNumbers(long long a, long long b);
 }
