@@ -1,5 +1,6 @@
 #include <boost/test/unit_test.hpp>
 #include "hashTable.hpp"
+#include <string>
 
 BOOST_AUTO_TEST_CASE(testAddAndHas)
 {
@@ -16,12 +17,12 @@ BOOST_AUTO_TEST_CASE(testFindAndModify)
 {
   kuchukbaeva::HashTable< std::string, int > ht(16);
   ht.add("key1", 5);
-  int* valPtr = ht.find("key1");
-  BOOST_REQUIRE(valPtr != nullptr);
-  BOOST_CHECK_EQUAL(*valPtr, 5);
+  auto it = ht.find("key1");
+  BOOST_REQUIRE(it != ht.end());
+  BOOST_CHECK_EQUAL(it->second, 5);
 
-  *valPtr = 15;
-  BOOST_CHECK_EQUAL(*(ht.find("key1")), 15);
+  it->second = 15;
+  BOOST_CHECK_EQUAL(ht.find("key1")->second, 15);
 }
 
 BOOST_AUTO_TEST_CASE(testDrop)
@@ -30,11 +31,11 @@ BOOST_AUTO_TEST_CASE(testDrop)
   ht.add("removeMe", 99);
   BOOST_CHECK(ht.has("removeMe"));
 
-  int result = ht.drop("removeMe");
-  BOOST_CHECK_EQUAL(result, 99);
+  bool result = ht.drop("removeMe");
+  BOOST_CHECK(result);
   BOOST_CHECK(!ht.has("removeMe"));
 
-  BOOST_CHECK_THROW(ht.drop("notThere"), std::out_of_range);
+  BOOST_CHECK(!ht.drop("notThere"));
 }
 
 BOOST_AUTO_TEST_CASE(testRehash)
@@ -62,3 +63,19 @@ BOOST_AUTO_TEST_CASE(testExceptionSafetyCopyAndSwap)
   BOOST_CHECK(!ht2.has("B"));
   BOOST_CHECK(ht1.has("B"));
 }
+
+BOOST_AUTO_TEST_CASE(testIterators)
+{
+  kuchukbaeva::HashTable< std::string, int > ht(4);
+  ht.add("A", 10);
+  ht.add("B", 20);
+
+  size_t count = 0;
+  for (auto it = ht.cbegin(); it != ht.cend(); ++it)
+  {
+    ++count;
+    BOOST_CHECK(it->first == "A" || it->first == "B");
+  }
+  BOOST_CHECK_EQUAL(count, 2);
+}
+

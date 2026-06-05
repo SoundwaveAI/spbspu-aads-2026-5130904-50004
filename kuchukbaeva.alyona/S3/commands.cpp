@@ -1,8 +1,9 @@
-#include "commands.hpp"
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
+#include "commands.hpp"
 
-template< typename T >
+template< class T >
 void kuchukbaeva::sortVector(Vector< T >& vec)
 {
   size_t n = vec.getSize();
@@ -22,6 +23,11 @@ void kuchukbaeva::sortVector(Vector< T >& vec)
       }
     }
   }
+}
+
+void kuchukbaeva::throwInval()
+{
+  throw std::invalid_argument("INVALID COMMAND");
 }
 
 kuchukbaeva::Vector< std::string > kuchukbaeva::splitString(const std::string& str)
@@ -69,7 +75,7 @@ bool kuchukbaeva::tryParseUInt(const std::string& str, unsigned int& out)
       return false;
     }
   }
-  out = static_cast<unsigned int>(res);
+  out = static_cast< unsigned int >(res);
   return true;
 }
 
@@ -153,10 +159,17 @@ void kuchukbaeva::Application::processLine(const std::string& line)
   {
     return;
   }
-  CommandFunc* funcPtr = commands_.find(tokens[0]);
-  if (funcPtr)
+  auto it = commands_.find(tokens[0]);
+  if (it != commands_.end())
   {
-    (*funcPtr)(this, tokens);
+    try
+    {
+      (it->second)(this, tokens);
+    }
+    catch (const std::invalid_argument&)
+    {
+      std::cout << "<INVALID COMMAND>" << "\n";
+    }
   }
   else
   {
@@ -168,8 +181,7 @@ void kuchukbaeva::Application::cmdGraphs(Application* app, const Vector< std::st
 {
   if (args.getSize() != 1)
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
   Vector< std::string > names;
   for (auto it = app->graphs_.cbegin(); it != app->graphs_.cend(); ++it)
@@ -192,16 +204,14 @@ void kuchukbaeva::Application::cmdVertexes(Application* app, const Vector< std::
 {
   if (args.getSize() != 2)
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
-  Graph* g = app->graphs_.find(args[1]);
-  if (!g)
+  auto it = app->graphs_.find(args[1]);
+  if (it == app->graphs_.end())
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
-  Vector< std::string > verts = g->getVertexes();
+  Vector< std::string > verts = it->second.getVertexes();
   if (verts.getSize() == 0)
   {
     std::cout << "\n";
@@ -216,18 +226,17 @@ void kuchukbaeva::Application::cmdVertexes(Application* app, const Vector< std::
 
 void kuchukbaeva::Application::cmdOutbound(Application* app, const Vector< std::string >& args)
 {
-  if (args.getSize() != 3) {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
-  }
-  Graph* g = app->graphs_.find(args[1]);
-  if (!g || !g->hasVertex(args[2]))
+  if (args.getSize() != 3)
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
+  }
+  auto it = app->graphs_.find(args[1]);
+  if (it == app->graphs_.end() || !it->second.hasVertex(args[2]))
+  {
+    throwInval();
   }
   Vector< std::pair< std::string, unsigned int > > res;
-  g->getOutbound(args[2], res);
+  it->second.getOutbound(args[2], res);
   if (res.getSize() > 0)
   {
     std::string current_v = res[0].first;
@@ -256,17 +265,15 @@ void kuchukbaeva::Application::cmdInbound(Application* app, const Vector< std::s
 {
   if (args.getSize() != 3)
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
-  Graph* g = app->graphs_.find(args[1]);
-  if (!g || !g->hasVertex(args[2]))
+  auto it = app->graphs_.find(args[1]);
+  if (it == app->graphs_.end() || !it->second.hasVertex(args[2]))
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
   Vector< std::pair< std::string, unsigned int > > res;
-  g->getInbound(args[2], res);
+  it->second.getInbound(args[2], res);
   if (res.getSize() > 0)
   {
     std::string current_v = res[0].first;
@@ -296,16 +303,14 @@ void kuchukbaeva::Application::cmdBind(Application* app, const Vector< std::stri
   unsigned int weight = 0;
   if (args.getSize() != 5 || !tryParseUInt(args[4], weight))
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
-  Graph* g = app->graphs_.find(args[1]);
-  if (!g)
+  auto it = app->graphs_.find(args[1]);
+  if (it == app->graphs_.end())
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
-  g->addEdge(args[2], args[3], weight);
+  it->second.addEdge(args[2], args[3], weight);
 }
 
 void kuchukbaeva::Application::cmdCut(Application* app, const Vector< std::string >& args)
@@ -313,14 +318,12 @@ void kuchukbaeva::Application::cmdCut(Application* app, const Vector< std::strin
   unsigned int weight = 0;
   if (args.getSize() != 5 || !tryParseUInt(args[4], weight))
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
-  Graph* g = app->graphs_.find(args[1]);
-  if (!g || !g->cutEdge(args[2], args[3], weight))
+  auto it = app->graphs_.find(args[1]);
+  if (it == app->graphs_.end() || !it->second.cutEdge(args[2], args[3], weight))
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
 }
 
@@ -329,13 +332,11 @@ void kuchukbaeva::Application::cmdCreate(Application* app, const Vector< std::st
   unsigned int count = 0;
   if (args.getSize() < 3 || !tryParseUInt(args[2], count) || args.getSize() != 3 + count)
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
   if (app->graphs_.has(args[1]))
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
   for (unsigned int i = 0; i < count; ++i)
   {
@@ -343,8 +344,7 @@ void kuchukbaeva::Application::cmdCreate(Application* app, const Vector< std::st
     {
       if (args[3 + i] == args[3 + j])
       {
-        std::cout << "<INVALID COMMAND>\n";
-        return;
+        throwInval();
       }
     }
   }
@@ -360,33 +360,30 @@ void kuchukbaeva::Application::cmdMerge(Application* app, const Vector< std::str
 {
   if (args.getSize() != 4 || app->graphs_.has(args[1]))
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
-  Graph* g1 = app->graphs_.find(args[2]);
-  Graph* g2 = app->graphs_.find(args[3]);
-  if (!g1 || !g2)
+  auto it1 = app->graphs_.find(args[2]);
+  auto it2 = app->graphs_.find(args[3]);
+  if (it1 == app->graphs_.end() || it2 == app->graphs_.end())
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
-  app->graphs_.add(args[1], g1->merge(*g2));
+  app->graphs_.add(args[1], it1->second.merge(it2->second));
 }
 
 void kuchukbaeva::Application::cmdExtract(Application* app, const Vector< std::string >& args)
 {
   if (args.getSize() < 4 || app->graphs_.has(args[1]))
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
-  Graph* oldG = app->graphs_.find(args[2]);
+  auto it = app->graphs_.find(args[2]);
   unsigned int count = 0;
-  if (!oldG || !tryParseUInt(args[3], count) || args.getSize() != 4 + count)
+  if (it == app->graphs_.end() || !tryParseUInt(args[3], count) || args.getSize() != 4 + count)
   {
-    std::cout << "<INVALID COMMAND>\n";
-    return;
+    throwInval();
   }
+  Graph& oldG = it->second;
   Vector< std::string > vToExtract;
   for (unsigned int i = 0; i < count; ++i)
   {
@@ -395,17 +392,14 @@ void kuchukbaeva::Application::cmdExtract(Application* app, const Vector< std::s
     {
       if (v == args[4 + j])
       {
-        std::cout << "<INVALID COMMAND>\n";
-        return;
+        throwInval();
       }
     }
-    if (!oldG->hasVertex(v))
+    if (!oldG.hasVertex(v))
     {
-      std::cout << "<INVALID COMMAND>\n";
-      return;
+      throwInval();
     }
     vToExtract.pushBack(v);
   }
-  app->graphs_.add(args[1], oldG->extract(vToExtract));
+  app->graphs_.add(args[1], oldG.extract(vToExtract));
 }
-
