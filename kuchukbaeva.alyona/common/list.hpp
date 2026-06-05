@@ -4,8 +4,8 @@
 #include <utility>
 #include "list-iterators.hpp"
 
-namespace kuchukbaeva {
-
+namespace kuchukbaeva
+{
   template< class T >
   class List
   {
@@ -86,7 +86,8 @@ kuchukbaeva::List< T >& kuchukbaeva::List< T >::operator=(const List& other)
 template< class T >
 kuchukbaeva::List< T >& kuchukbaeva::List< T >::operator=(List&& other) noexcept
 {
-  if (this != &other) {
+  if (this != &other)
+  {
     swap(other);
   }
   return *this;

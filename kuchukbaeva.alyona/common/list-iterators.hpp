@@ -4,7 +4,8 @@
 #include <memory>
 #include "node.hpp"
 
-namespace  kuchukbaeva {
+namespace  kuchukbaeva
+{
   template< class T > class List;
   template< class T > class LCIter;
   template< class T >

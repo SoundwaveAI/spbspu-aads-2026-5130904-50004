@@ -2,15 +2,16 @@
 #define NODE_HPP
 #include <utility>
 
-namespace kuchukbaeva {
-  namespace detail {
+namespace kuchukbaeva
+{
+  namespace detail
+  {
     template< class T >
     struct Node
     {
       Node();
       Node(const T& d, Node* n);
       Node(T&& d, Node* n);
-
       T data_;
       Node* next_;
     };

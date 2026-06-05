@@ -10,7 +10,8 @@ int main()
   try
   {
     kuchukbaeva::List< std::pair< std::string, kuchukbaeva::List< unsigned long long > > > seque;
-    kuchukbaeva::LIter< std::pair< std::string, kuchukbaeva::List< unsigned long long > > > seqTail = seque.beforeBegin();
+    kuchukbaeva::LIter< std::pair< std::string,
+      kuchukbaeva::List< unsigned long long > > > seqTail = seque.beforeBegin();
     std::string name;
 
     while (std::cin >> name)
@@ -90,7 +91,6 @@ int main()
           {
             currentSum += val;
           }
-
           ++(*iterNode);
           hasMore = true;
         }
@@ -137,9 +137,7 @@ int main()
         std::cout << "\n";
       }
     }
-
     return 0;
-
   }
   catch (const std::exception& e)
   {
