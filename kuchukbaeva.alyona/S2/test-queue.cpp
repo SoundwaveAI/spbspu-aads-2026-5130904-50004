@@ -57,7 +57,8 @@ BOOST_AUTO_TEST_CASE(testQueueConstTop)
   BOOST_CHECK_EQUAL(constQueue.top(), 42);
 }
 
-BOOST_AUTO_TEST_CASE(testQueueException) {
+BOOST_AUTO_TEST_CASE(testQueueException)
+{
   kuchukbaeva::Queue< int > queue;
   BOOST_CHECK_THROW(queue.top(), std::out_of_range);
   BOOST_CHECK_THROW(queue.pop(), std::out_of_range);
