@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <utility>
 #include <new>
-#include "vecit.hpp"
+#include "vecIter.hpp"
 
 namespace kuchukbaeva
 {
@@ -94,7 +94,7 @@ kuchukbaeva::Vector< T >::Vector(Vector < T >&& rhs) noexcept:
 template< class T >
 kuchukbaeva::Vector< T >& kuchukbaeva::Vector < T >::operator=(Vector< T >&& rhs) noexcept
 {
-  if (this != &rhs)
+  if (this != std::addressof(rhs))
   {
     clear();
     ::operator delete(data_);
@@ -145,7 +145,7 @@ kuchukbaeva::Vector< T >::Vector(const Vector< T >& rhs):
 template< class T >
 kuchukbaeva::Vector< T >& kuchukbaeva::Vector< T >::operator=(const Vector< T >& rhs)
 {
-  if (this != &rhs)
+  if (this != std::addressof(rhs))
   {
     Vector< T > copy(rhs);
     swap(copy);
