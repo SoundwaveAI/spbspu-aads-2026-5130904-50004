@@ -15,7 +15,8 @@ kuchukbaeva::Tournament::Tournament():
   playedThisRound_(16)
 {}
 
-kuchukbaeva::Tournament::Tournament(const std::string& name, TournamentType type, size_t expectedPlayers):
+kuchukbaeva::Tournament::Tournament(const std::string& name,
+  TournamentType type, size_t expectedPlayers):
   name_(name),
   type_(type),
   graph_(),
@@ -139,7 +140,8 @@ void kuchukbaeva::Tournament::leavePlayer(const std::string& playerName)
   swap(temp);
 }
 
-void kuchukbaeva::Tournament::substitutePlayer(const std::string& oldName, const std::string& newName, int newRating)
+void kuchukbaeva::Tournament::substitutePlayer(const std::string& oldName,
+  const std::string& newName, int newRating)
 {
   if (currentRound_ > 0 || isRoundActive_)
   {
@@ -174,7 +176,8 @@ void kuchukbaeva::Tournament::startRound()
   {
     throw TournamentException("Слишком много игроков добавлено");
   }
-  if (type_ == TournamentType::OLYMPIC && currentCount != expectedPlayers_ || type_ == TournamentType::SWISS && currentCount != expectedPlayers_)
+  if (type_ == TournamentType::OLYMPIC && currentCount != expectedPlayers_ ||
+    type_ == TournamentType::SWISS && currentCount != expectedPlayers_)
   {
     throw TournamentException("Требуется заявленное количество игроков");
   }
@@ -189,7 +192,8 @@ void kuchukbaeva::Tournament::startRound()
   Tournament temp(*this);
   temp.isRoundActive_ = true;
   temp.currentPairs_ = Vector< std::pair< std::string, std::string > >();
-  temp.playedThisRound_ = HashTable< std::pair< std::string, std::string >, bool, EdgeHash, EdgeEqual >(16);
+  temp.playedThisRound_ = HashTable< std::pair< std::string, std::string >,
+    bool, EdgeHash, EdgeEqual >(16);
 
   if (temp.type_ == TournamentType::OLYMPIC)
   {
@@ -423,14 +427,16 @@ void kuchukbaeva::Tournament::generateSwissPairs()
     size_t right = n - 1;
     while (left < right)
     {
-      std::pair< std::string, std::string > matchPair = std::make_pair(activePlayers[left], activePlayers[right]);
+      std::pair< std::string, std::string > matchPair = std::make_pair(activePlayers[left],
+        activePlayers[right]);
       finalPairs.pushBack(matchPair);
 
       if (activePlayers[left] == "плюсов" || activePlayers[right] == "плюсов")
       {
         finalPlayed.add(matchPair, true);
         finalPlayed.add(std::make_pair(matchPair.second, matchPair.first), true);
-        std::string realPlayer = (activePlayers[left] == "плюсов") ? activePlayers[right] : activePlayers[left];
+        std::string realPlayer = (activePlayers[left] == "плюсов") ? activePlayers[right] :
+          activePlayers[left];
         finalGraph.addMatch(realPlayer, "плюсов", 1.0f);
       }
       else
@@ -551,7 +557,8 @@ void kuchukbaeva::Tournament::nextRound()
   temp.isRoundActive_ = false;
   temp.currentRound_ += 1;
   temp.currentPairs_ = Vector< std::pair< std::string, std::string > >();
-  temp.playedThisRound_ = HashTable< std::pair< std::string, std::string >, bool, EdgeHash, EdgeEqual >(16);
+  temp.playedThisRound_ = HashTable< std::pair< std::string, std::string >,
+    bool, EdgeHash, EdgeEqual >(16);
   swap(temp);
 }
 
@@ -570,7 +577,8 @@ const kuchukbaeva::Graph& kuchukbaeva::Tournament::getGraph() const noexcept
   return graph_;
 }
 
-kuchukbaeva::ParticipantStatus kuchukbaeva::Tournament::getPlayerStatus(const std::string& playerName) const
+kuchukbaeva::ParticipantStatus
+  kuchukbaeva::Tournament::getPlayerStatus(const std::string& playerName) const
 {
   if (!statuses_.has(playerName))
   {
@@ -579,7 +587,8 @@ kuchukbaeva::ParticipantStatus kuchukbaeva::Tournament::getPlayerStatus(const st
   return statuses_.find(playerName)->second;
 }
 
-const kuchukbaeva::Vector< std::pair< std::string, std::string > >& kuchukbaeva::Tournament::getCurrentPairs() const noexcept
+const kuchukbaeva::Vector< std::pair< std::string, std::string > >&
+  kuchukbaeva::Tournament::getCurrentPairs() const noexcept
 {
   return currentPairs_;
 }
@@ -623,7 +632,8 @@ void kuchukbaeva::Tournament::serialize(std::ostream& os) const
   graph_.serialize(os);
 }
 
-bool kuchukbaeva::Tournament::solvePairsRecursive(size_t idx, const Vector< std::string >& activePlayers, Vector< char >& paired, Vector< std::pair< std::string, std::string > >& tempPairs)
+bool kuchukbaeva::Tournament::solvePairsRecursive(size_t idx, const Vector< std::string >&
+  activePlayers, Vector< char >& paired, Vector< std::pair< std::string, std::string > >& tempPairs)
 {
   while (idx < activePlayers.getSize() && paired[idx] == 1)
   {
@@ -792,7 +802,8 @@ void kuchukbaeva::Tournament::deserialize(std::istream& is)
   graph_.deserialize(is);
 }
 
-kuchukbaeva::Vector< std::pair< std::string, std::string > > kuchukbaeva::Tournament::getPendingMatches() const
+kuchukbaeva::Vector< std::pair< std::string, std::string > >
+  kuchukbaeva::Tournament::getPendingMatches() const
 {
   Vector< std::pair< std::string, std::string > > pending;
   if (!isRoundActive_)

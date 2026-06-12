@@ -447,7 +447,8 @@ void kuchukbaeva::Engine::standingsCmd(const Vector< std::string >& tokens)
       {
         buchholz += opps[k];
       }
-      std::cout << " <" << i + 1 << ". " << p << ": " << pts << " pts (BH: " << buchholz << ", rating: " << rating << ")>\n";
+      std::cout << " <" << i + 1 << ". " << p << ": "
+                << pts << " pts (BH: " << buchholz << ", rating: " << rating << ")>\n";
     }
   }
   else
@@ -614,7 +615,8 @@ void kuchukbaeva::Engine::infoCmd(const Vector< std::string >& tokens)
       std::cout << "Pending matches:\n";
       for (size_t i = 0; i < pending.getSize(); ++i)
       {
-        std::cout << "<" << pending[i].first << ">" << " vs " << "<" << pending[i].second << ">" << "\n";
+        std::cout << "<" << pending[i].first << ">"
+                  << " vs " << "<" << pending[i].second << ">" << "\n";
       }
     }
   }
@@ -660,7 +662,8 @@ void kuchukbaeva::Engine::topCmd(const Vector< std::string >& tokens)
       {
         bestIdx = j;
       }
-      else if (players[j].second == players[bestIdx].second && players[j].first < players[bestIdx].first)
+      else if (players[j].second == players[bestIdx].second &&
+        players[j].first < players[bestIdx].first)
       {
         bestIdx = j;
       }
@@ -697,7 +700,8 @@ void kuchukbaeva::Engine::loadCmd(const Vector< std::string >& tokens)
     throw InvalidCommandException("");
   }
   PlayerDatabase tempDb;
-  HashTable< std::string, Tournament, DefaultHash< std::string >, EqualFunctor< std::string > > tempTours(16);
+  HashTable< std::string, Tournament, DefaultHash< std::string >,
+    EqualFunctor< std::string > > tempTours(16);
 
   std::string marker;
   file >> marker;

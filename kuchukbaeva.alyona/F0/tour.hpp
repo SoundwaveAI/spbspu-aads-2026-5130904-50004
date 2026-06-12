@@ -85,7 +85,8 @@ namespace kuchukbaeva
     size_t expectedPlayers_ = 0;
     void generateOlympicPairs();
     void generateSwissPairs();
-    bool solvePairsRecursive(size_t idx, const Vector< std::string >& activePlayers, Vector< char >& paired, Vector< std::pair< std::string, std::string > >& tempPairs);
+    bool solvePairsRecursive(size_t idx, const Vector< std::string >& activePlayers,
+      Vector< char >& paired, Vector< std::pair< std::string, std::string > >& tempPairs);
   };
 }
 
