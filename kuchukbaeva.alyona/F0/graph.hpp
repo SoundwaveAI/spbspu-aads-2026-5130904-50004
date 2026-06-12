@@ -30,6 +30,7 @@ namespace kuchukbaeva
   class Graph
   {
   public:
+    static constexpr size_t DEF_CAPACITY = 16;
     Graph();
     Graph(const Graph& other);
     Graph(Graph&& other) noexcept;

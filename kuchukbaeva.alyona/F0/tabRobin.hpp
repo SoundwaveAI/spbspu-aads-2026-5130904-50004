@@ -105,7 +105,7 @@ template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HashTable< Key, Value, Hash, Equal >&
   kuchukbaeva::HashTable< Key, Value, Hash, Equal >::operator=(const HashTable& other)
 {
-  if (this != &other)
+  if (this != std::addressof(other))
   {
     HashTable tmp(other);
     swap(tmp);
@@ -117,7 +117,7 @@ template< class Key, class Value, class Hash, class Equal >
 kuchukbaeva::HashTable< Key, Value, Hash, Equal >&
   kuchukbaeva::HashTable< Key, Value, Hash, Equal >::operator=(HashTable&& other) noexcept
 {
-  if (this != &other)
+  if (this != std::addressof(other))
   {
     HashTable tmp(std::move(other));
     swap(tmp);

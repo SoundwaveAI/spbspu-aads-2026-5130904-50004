@@ -15,11 +15,11 @@ namespace kuchukbaeva
     size_t draws = 0;
   };
 
-  using ConstIterator = HTCiter< std::string, PlayerStats, DefaultHash< std::string >, EqualFunctor< std::string > >;
-
   class PlayerDatabase
   {
   public:
+    using ConstIterator = HTCiter< std::string, PlayerStats, DefaultHash<std::string>, EqualFunctor<std::string> >;
+
     PlayerDatabase();
     PlayerDatabase(const PlayerDatabase& other);
     PlayerDatabase(PlayerDatabase&& other) noexcept;

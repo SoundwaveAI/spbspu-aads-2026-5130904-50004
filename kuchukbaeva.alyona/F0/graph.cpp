@@ -8,7 +8,7 @@ using EdgeCiter = kuchukbaeva::HTCiter< std::pair< std::string, std::string >, f
 
 kuchukbaeva::Graph::Graph():
   vertexes_(),
-  edges_(16)
+  edges_(DEF_CAPACITY)
 {}
 
 kuchukbaeva::Graph::Graph(const Graph& other):

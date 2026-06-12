@@ -82,7 +82,7 @@ std::pair< Key, Value >& kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operato
 template< class Key, class Value, class Hash, class Equal >
 std::pair< Key, Value >* kuchukbaeva::HTIter< Key, Value, Hash, Equal >::operator->()
 {
-  return &(mass_->operator[](idx_).kv);
+  return std::addressof(mass_->operator[](idx_).kv);
 }
 
 template< class Key, class Value, class Hash, class Equal >
@@ -160,7 +160,7 @@ const std::pair< Key, Value >& kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::
 template< class Key, class Value, class Hash, class Equal >
 const std::pair< Key, Value >* kuchukbaeva::HTCiter< Key, Value, Hash, Equal >::operator->() const
 {
-  return &(mass_->operator[](idx_).kv);
+  return std::addressof(mass_->operator[](idx_).kv);
 }
 
 template< class Key, class Value, class Hash, class Equal >
