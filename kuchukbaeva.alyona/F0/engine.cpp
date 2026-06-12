@@ -207,8 +207,8 @@ void kuchukbaeva::Engine::mergeCmd(const Vector< std::string >& tokens)
 
   if (file.fail() && !file.eof())
   {
-    throw TournamentException("Неверный формат
-      данных в файле. Ожидается: <фамилия> <рейтинг>");
+    throw TournamentException("Неверный формат "
+                              "данных в файле. Ожидается: <фамилия> <рейтинг>");
   }
   std::cout << "<Успешно>\n";
 }
