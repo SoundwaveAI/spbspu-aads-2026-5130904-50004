@@ -167,7 +167,8 @@ void kuchukbaeva::Engine::createCmd(const Vector< std::string >& tokens)
     type = TournamentType::OLYMPIC;
     if ((playersLimit & (playersLimit - 1)) != 0)
     {
-      throw TournamentException("В олимпийской системе число участников должно быть степенью двойки");
+      throw TournamentException("В олимпийской
+        системе число участников должно быть степенью двойки");
     }
   }
   else
@@ -206,7 +207,8 @@ void kuchukbaeva::Engine::mergeCmd(const Vector< std::string >& tokens)
 
   if (file.fail() && !file.eof())
   {
-    throw TournamentException("Неверный формат данных в файле. Ожидается: <фамилия> <рейтинг>");
+    throw TournamentException("Неверный формат
+      данных в файле. Ожидается: <фамилия> <рейтинг>");
   }
   std::cout << "<Успешно>\n";
 }
@@ -603,7 +605,8 @@ void kuchukbaeva::Engine::infoCmd(const Vector< std::string >& tokens)
     playerCount--;
   }
   std::cout << "Name: " << t.getName() << "\n";
-  std::cout << "Type: " << (t.getType() == TournamentType::SWISS ? "Swiss" : "Olympic") << "\n";
+  std::cout << "Type: " << (t.getType() ==
+    TournamentType::SWISS ? "Swiss" : "Olympic") << "\n";
   std::cout << "Current Round: " << t.getCurrentRound() << "\n";
   std::cout << "Active Round: " << (t.isRoundActive() ? "Yes" : "No") << "\n";
   std::cout << "Players: " << playerCount << "\n";
@@ -746,7 +749,8 @@ void kuchukbaeva::Engine::deleteCmd(const Vector< std::string >& tokens)
   Tournament& t = activeTournaments_.find(tName)->second;
   if (t.isRoundActive() || t.getCurrentRound() > 0)
   {
-    throw TournamentException("Нельзя удалить турнир, который уже начался или имеет активный раунд");
+    throw TournamentException("Нельзя удалить турнир,
+      который уже начался или имеет активный раунд");
   }
   Tournament dummy;
   activeTournaments_.drop(tName, dummy);
