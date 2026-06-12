@@ -176,8 +176,8 @@ void kuchukbaeva::Tournament::startRound()
   {
     throw TournamentException("Слишком много игроков добавлено");
   }
-  if (type_ == TournamentType::OLYMPIC && currentCount != expectedPlayers_ ||
-    type_ == TournamentType::SWISS && currentCount != expectedPlayers_)
+  if ((type_ == TournamentType::OLYMPIC && currentCount != expectedPlayers_) ||
+      (type_ == TournamentType::SWISS && currentCount != expectedPlayers_))
   {
     throw TournamentException("Требуется заявленное количество игроков");
   }

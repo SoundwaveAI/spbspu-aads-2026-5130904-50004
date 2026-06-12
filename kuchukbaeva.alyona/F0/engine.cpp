@@ -1,4 +1,4 @@
-#include "eng.hpp"
+#include "engine.hpp"
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
@@ -167,8 +167,8 @@ void kuchukbaeva::Engine::createCmd(const Vector< std::string >& tokens)
     type = TournamentType::OLYMPIC;
     if ((playersLimit & (playersLimit - 1)) != 0)
     {
-      throw TournamentException("В олимпийской
-        системе число участников должно быть степенью двойки");
+      throw TournamentException("В олимпийской "
+                                "системе число участников должно быть степенью двойки");
     }
   }
   else
@@ -749,8 +749,8 @@ void kuchukbaeva::Engine::deleteCmd(const Vector< std::string >& tokens)
   Tournament& t = activeTournaments_.find(tName)->second;
   if (t.isRoundActive() || t.getCurrentRound() > 0)
   {
-    throw TournamentException("Нельзя удалить турнир,
-      который уже начался или имеет активный раунд");
+    throw TournamentException("Нельзя удалить турнир, "
+                              "который уже начался или имеет активный раунд");
   }
   Tournament dummy;
   activeTournaments_.drop(tName, dummy);
