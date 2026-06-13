@@ -605,8 +605,8 @@ void kuchukbaeva::Engine::infoCmd(const Vector< std::string >& tokens)
     playerCount--;
   }
   std::cout << "Name: " << t.getName() << "\n";
-  std::cout << "Type: " << (t.getType() ==
-    TournamentType::SWISS ? "Swiss" : "Olympic") << "\n";
+  std::cout << "Type: "
+            << (t.getType() == TournamentType::SWISS ? "Swiss" : "Olympic") << "\n";
   std::cout << "Current Round: " << t.getCurrentRound() << "\n";
   std::cout << "Active Round: " << (t.isRoundActive() ? "Yes" : "No") << "\n";
   std::cout << "Players: " << playerCount << "\n";

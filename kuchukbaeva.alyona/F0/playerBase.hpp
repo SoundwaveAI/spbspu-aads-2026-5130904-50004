@@ -18,7 +18,7 @@ namespace kuchukbaeva
   class PlayerDatabase
   {
   public:
-    using ConstIterator = HTCiter< std::string, PlayerStats, DefaultHash<std::string>, EqualFunctor<std::string> >;
+    using ConstIterator = HTCiter< std::string, PlayerStats, DefaultHash< std::string >, EqualFunctor< std::string > >;
 
     PlayerDatabase();
     PlayerDatabase(const PlayerDatabase& other);

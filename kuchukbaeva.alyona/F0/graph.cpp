@@ -128,7 +128,7 @@ void kuchukbaeva::Graph::removePlayer(const std::string& name)
   temp.vertexes_.erase(targetIdx);
   size_t edgeCount = temp.edges_.getSize();
   size_t newCap = (edgeCount > 0) ? (edgeCount * 2) : 16;
-  HashTable<std::pair<std::string, std::string>, float, EdgeHash, EdgeEqual> newEdges(newCap);
+  HashTable< std::pair< std::string, std::string >, float, EdgeHash, EdgeEqual > newEdges(newCap);
   for (EdgeCiter it = temp.edges_.cbegin(); it != temp.edges_.cend(); ++it)
   {
     if (it->first.first != name && it->first.second != name)
