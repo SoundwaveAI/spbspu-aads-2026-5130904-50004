@@ -251,19 +251,11 @@ void kuchukbaeva::Graph::serialize(std::ostream& os) const
 {
   for (size_t i = 0; i < vertexes_.getSize(); ++i)
   {
-    if (vertexes_[i] == "плюсов")
-    {
-      continue;
-    }
     os << vertexes_[i] << "\n";
   }
   os << "---\n";
   for (EdgeCiter it = edges_.cbegin(); it != edges_.cend(); ++it)
   {
-    if (it->first.first == "плюсов" || it->first.second == "плюсов")
-    {
-      continue;
-    }
     os << it->first.first << " " << it->first.second << " " << it->second << "\n";
   }
 }
@@ -304,6 +296,9 @@ void kuchukbaeva::Graph::deserialize(std::istream& is)
       break;
     }
     is >> p2 >> res;
-    addMatch(p1, p2, res);
+    if (hasPlayer(p1) && hasPlayer(p2))
+    {
+      addMatch(p1, p2, res);
+    }
   }
 }
