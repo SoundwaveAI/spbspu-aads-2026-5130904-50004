@@ -4,7 +4,7 @@
 #include <string>
 #include "hashTable.hpp"
 #include "graph.hpp"
-#include "vector.hpp"
+#include <vector.hpp>
 
 namespace kuchukbaeva
 {
