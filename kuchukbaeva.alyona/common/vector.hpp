@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <utility>
 #include <new>
+#include "vectorIter.hpp"
 
 namespace kuchukbaeva
 {
@@ -19,7 +20,7 @@ namespace kuchukbaeva
 
     Vector< T >& operator=(const Vector< T >& rhs);
     Vector< T >& operator=(Vector< T >&& rhs) noexcept;
-    void swap(Vector < T >& rhs) noexcept;
+    void swap(Vector< T >& rhs) noexcept;
 
     void insert(size_t id, const T& value);
     void erase(size_t id);
@@ -28,9 +29,21 @@ namespace kuchukbaeva
     size_t getSize() const noexcept;
     size_t getCapacity() const noexcept;
     void pushBack(const T& value);
+    void popBack();
+    void reserve(size_t newCap);
+    void pushBack(T&& value);
 
     T& operator[](size_t id) noexcept;
     const T& operator[](size_t id) const noexcept;
+    T& at(size_t id);
+    const T& at(size_t id) const;
+
+    Viter< T > begin() noexcept;
+    Viter< T > end() noexcept;
+    Vciter< T > begin() const noexcept;
+    Vciter< T > end() const noexcept;
+    Vciter< T > cbegin() const noexcept;
+    Vciter< T > cend() const noexcept;
 
   private:
     T* data_;
@@ -81,7 +94,7 @@ kuchukbaeva::Vector< T >::Vector(Vector < T >&& rhs) noexcept:
 template< class T >
 kuchukbaeva::Vector< T >& kuchukbaeva::Vector < T >::operator=(Vector< T >&& rhs) noexcept
 {
-  if (this != &rhs)
+  if (this != std::addressof(rhs))
   {
     clear();
     ::operator delete(data_);
@@ -132,7 +145,7 @@ kuchukbaeva::Vector< T >::Vector(const Vector< T >& rhs):
 template< class T >
 kuchukbaeva::Vector< T >& kuchukbaeva::Vector< T >::operator=(const Vector< T >& rhs)
 {
-  if (this != &rhs)
+  if (this != std::addressof(rhs))
   {
     Vector< T > copy(rhs);
     swap(copy);
@@ -167,37 +180,49 @@ size_t kuchukbaeva::Vector< T >::getCapacity() const noexcept
 }
 
 template< class T >
+void kuchukbaeva::Vector< T >::reserve(size_t newCap)
+{
+  if (newCap <= capacity_)
+  {
+    return;
+  }
+  T* newData = static_cast< T* >(::operator new(newCap * sizeof(T)));
+  size_t i = 0;
+  try
+  {
+    for (; i < size_; ++i)
+    {
+      new (newData + i) T(data_[i]);
+    }
+  }
+  catch (...)
+  {
+    for (size_t j = 0; j < i; ++j)
+    {
+      newData[j].~T();
+    }
+    ::operator delete(newData);
+    throw;
+  }
+
+  for (size_t j = 0; j < size_; ++j)
+  {
+    data_[j].~T();
+  }
+  ::operator delete(data_);
+
+  data_ = newData;
+  capacity_ = newCap;
+}
+
+template< class T >
 void kuchukbaeva::Vector< T >::pushBack(const T& value)
 {
   if (size_ == capacity_)
   {
-    size_t newCap = capacity_ == 0 ? 1 : capacity_ * 2;
-    T* newData = static_cast< T* >(::operator new(newCap * sizeof(T)));
-    size_t i = 0;
-    try
-    {
-      for (; i < size_; ++i)
-      {
-        new (newData + i) T(data_[i]);
-      }
-      new (newData + size_) T(value);
-    }
-    catch (...)
-    {
-      for (size_t j = 0; j < i; ++j)
-      {
-        newData[j].~T();
-      }
-      ::operator delete(newData);
-      throw;
-    }
-    for (size_t j = 0; j < size_; ++j)
-    {
-      data_[j].~T();
-    }
-    ::operator delete(data_);
-    data_ = newData;
-    capacity_ = newCap;
+    T copy = value;
+    reserve(capacity_ == 0 ? 1 : capacity_ * 2);
+    new (data_ + size_) T(std::move(copy));
   }
   else
   {
@@ -208,6 +233,28 @@ void kuchukbaeva::Vector< T >::pushBack(const T& value)
 
 
 template< class T >
+void kuchukbaeva::Vector< T >::pushBack(T&& value)
+{
+  if (size_ == capacity_)
+  {
+    reserve(capacity_ == 0 ? 1 : capacity_ * 2);
+  }
+  new (data_ + size_) T(std::move(value));
+  ++size_;
+}
+
+template< class T >
+void kuchukbaeva::Vector< T >::popBack()
+{
+  if (size_ == 0)
+  {
+    throw std::out_of_range("Vector is empty");
+  }
+  data_[size_ - 1].~T();
+  --size_;
+}
+
+template< class T >
 void kuchukbaeva::Vector< T >::insert(size_t id, const T& value)
 {
   if (id > size_)
@@ -215,6 +262,7 @@ void kuchukbaeva::Vector< T >::insert(size_t id, const T& value)
     throw std::out_of_range("id out of bound");
   }
   Vector< T > copy;
+  copy.reserve((size_ == capacity_) ? (capacity_ == 0 ? 1 : capacity_ * 2) : capacity_);
   for (size_t i = 0; i < id; ++i)
   {
     copy.pushBack(data_[i]);
@@ -235,6 +283,7 @@ void kuchukbaeva::Vector< T >::erase(size_t id)
     throw std::out_of_range("id out of bound");
   }
   Vector< T > copy;
+  copy.reserve((size_ == capacity_) ? (capacity_ == 0 ? 1 : capacity_ * 2) : capacity_);
   for (size_t i = 0; i < id; ++i)
   {
     copy.pushBack(data_[i]);
@@ -244,6 +293,62 @@ void kuchukbaeva::Vector< T >::erase(size_t id)
     copy.pushBack(data_[i]);
   }
   swap(copy);
+}
+
+template< class T >
+T& kuchukbaeva::Vector< T >::at(size_t id)
+{
+  if (id >= size_)
+  {
+    throw std::out_of_range("id out of bound");
+  }
+  return data_[id];
+}
+
+template< class T >
+const T& kuchukbaeva::Vector< T >::at(size_t id) const
+{
+  if (id >= size_)
+  {
+    throw std::out_of_range("id out of bound");
+  }
+  return data_[id];
+}
+
+template< class T >
+kuchukbaeva::Viter< T > kuchukbaeva::Vector< T >::begin() noexcept
+{
+  return Viter< T >(data_);
+}
+
+template< class T >
+kuchukbaeva::Viter< T > kuchukbaeva::Vector< T >::end() noexcept
+{
+  return Viter< T >(data_ + size_);
+}
+
+template< class T >
+kuchukbaeva::Vciter< T > kuchukbaeva::Vector< T >::begin() const noexcept
+{
+  return Vciter< T >(data_);
+}
+
+template< class T >
+kuchukbaeva::Vciter< T > kuchukbaeva::Vector< T >::end() const noexcept
+{
+  return Vciter< T >(data_ + size_);
+}
+
+template< class T >
+kuchukbaeva::Vciter< T > kuchukbaeva::Vector< T >::cbegin() const noexcept
+{
+  return Vciter< T >(data_);
+}
+
+template< class T >
+kuchukbaeva::Vciter< T > kuchukbaeva::Vector< T >::cend() const noexcept
+{
+  return Vciter< T >(data_ + size_);
 }
 
 #endif
